@@ -86,6 +86,7 @@ namespace Tuyoo.Game.Demo
         private const float GooseStackLift = 0.13f;
         private const float EnemyMeleeY = PlayerY + 0.42f;
         private const float EnemyMeleeCooldown = 0.5f;
+        private const int MaxGooseCount = 70;
         private const int MaxGooseSlots = 7;
 
         private static readonly float[] LaneXs = { -1.35f, 0f, 1.35f };
@@ -223,7 +224,8 @@ namespace Tuyoo.Game.Demo
         {
             mSquareSprite = CreateSprite(CreateTexture(64, 64, t => FillTexture(t, Color.white)), 32f);
             mCircleSprite = CreateSprite(CreateTexture(64, 64, DrawCircleTexture), 32f);
-            mBackgroundSprite = LoadArtSprite("sheet_01", 160f);
+            // Keep the supplied 768x1376 artwork at its native aspect ratio.
+            mBackgroundSprite = LoadArtSprite("goose_farm_background", 1376f / 13f);
             mGooseSlingshotSprite = LoadArtSprite("sheet_04", 340f);
             mGooseBowSprite = LoadArtSprite("sheet_10", 340f);
             mGooseStaffSprite = LoadArtSprite("sheet_14", 340f);
@@ -233,8 +235,8 @@ namespace Tuyoo.Game.Demo
             mIceGateSprite = LoadArtSprite("sheet_37", 310f);
             mBowRackSprite = LoadArtSprite("sheet_49", 330f);
             mStaffRackSprite = LoadArtSprite("sheet_52", 330f);
-            mChickenSprite = LoadArtSprite("sheet_73", 430f);
-            mFatChickenSprite = LoadArtSprite("sheet_78", 430f);
+            mChickenSprite = LoadArtSprite("sheet_73", new Rect(50f, 480f, 620f, 1180f), 260f);
+            mFatChickenSprite = mChickenSprite;
 
             if (mGooseSlingshotSprite == null)
             {
@@ -257,6 +259,16 @@ namespace Tuyoo.Game.Demo
                 return null;
             }
             return Sprite.Create(texture, new Rect(0f, 0f, texture.width, texture.height), new Vector2(0.5f, 0.5f), pixelsPerUnit);
+        }
+
+        private Sprite LoadArtSprite(string name, Rect rect, float pixelsPerUnit)
+        {
+            Texture2D texture = Resources.Load<Texture2D>("Art/" + name);
+            if (texture == null)
+            {
+                return null;
+            }
+            return Sprite.Create(texture, rect, new Vector2(0.5f, 0.5f), pixelsPerUnit);
         }
 
         private void BuildLevels()
@@ -329,15 +341,13 @@ namespace Tuyoo.Game.Demo
         {
             if (mBackgroundSprite != null)
             {
-                CreateSpriteObject("PastoralRoad", mBackgroundRoot, mBackgroundSprite, Color.white, Vector3.zero, new Vector3(1.02f, 1.02f, 1f), -120);
+                CreateSpriteObject("PastoralRoad", mBackgroundRoot, mBackgroundSprite, Color.white, Vector3.zero, Vector3.one, -120);
             }
             else
             {
                 CreateSpriteObject("Sky", mBackgroundRoot, mSquareSprite, new Color(0.70f, 0.92f, 1f), new Vector3(0f, 1f, 0f), new Vector3(8f, 13f, 1f), -120);
                 CreateSpriteObject("Path", mBackgroundRoot, mSquareSprite, new Color(0.94f, 0.82f, 0.55f), new Vector3(0f, -1.5f, 0f), new Vector3(4.1f, 11f, 1f), -100);
             }
-            CreateSpriteObject("LaneLeft", mBackgroundRoot, mSquareSprite, new Color(1f, 1f, 1f, 0.12f), new Vector3(-1.35f, -0.8f, 0f), new Vector3(0.04f, 10.6f, 1f), -90);
-            CreateSpriteObject("LaneRight", mBackgroundRoot, mSquareSprite, new Color(1f, 1f, 1f, 0.12f), new Vector3(1.35f, -0.8f, 0f), new Vector3(0.04f, 10.6f, 1f), -90);
         }
 
         private void SetupHud()
@@ -731,7 +741,7 @@ namespace Tuyoo.Game.Demo
             }
             else if (target.Kind == EntityKind.Chicken)
             {
-                ApplyAttackToChicken(target, bullet.Damage, bullet.Attack);
+                ApplyChickenDamage(target, bullet.Damage, bullet.Attack);
             }
         }
 
@@ -847,21 +857,23 @@ namespace Tuyoo.Game.Demo
         {
             if (gate.Amount >= 0)
             {
+                int before = mGooseCount;
                 AddGoose(gate.Amount);
-                SpawnText(gate.Transform.position, "+" + gate.Amount, new Color(0.22f, 0.82f, 0.37f), 0.5f);
-                mScore += gate.Amount * 8f;
+                int added = mGooseCount - before;
+                SpawnText(gate.Transform.position, "+" + added, new Color(0.22f, 0.82f, 0.37f), 0.5f);
+                mScore += added * 8f;
             }
             else
             {
                 int before = mGooseCount;
-                mGooseCount = Mathf.Max(1, mGooseCount + gate.Amount);
+                mGooseCount = Mathf.Clamp(mGooseCount + gate.Amount, 1, MaxGooseCount);
                 SpawnText(gate.Transform.position, "-" + (before - mGooseCount), new Color(0.95f, 0.18f, 0.14f), 0.5f);
             }
         }
 
         private void AddGoose(int amount)
         {
-            mGooseCount += Mathf.Max(0, amount);
+            mGooseCount = Mathf.Clamp(mGooseCount + Mathf.Max(0, amount), 0, MaxGooseCount);
             RefreshGooseFormation();
         }
 
@@ -936,7 +948,7 @@ namespace Tuyoo.Game.Demo
                 int slotIndex = i % MaxGooseSlots;
                 int stackIndex = i / MaxGooseSlots;
                 view.Root.transform.localPosition = GooseOffsets[slotIndex] + new Vector3(0f, stackIndex * GooseStackLift, 0f);
-                view.Root.transform.localRotation = Quaternion.Euler(0f, 0f, -90f);
+                view.Root.transform.localRotation = Quaternion.identity;
                 view.Renderer.sprite = CurrentGooseSprite();
                 view.Renderer.color = CurrentGooseTint();
                 view.Renderer.sortingOrder = 20 + slotIndex * 4 + stackIndex;
@@ -1012,10 +1024,10 @@ namespace Tuyoo.Game.Demo
             chicken.Health = ChickenHealth(kind);
             chicken.MaxHealth = chicken.Health;
             chicken.MeleeTimer = EnemyMeleeCooldown;
-            chicken.Body.sprite = kind == ChickenKind.Fat || kind == ChickenKind.Boss ? mFatChickenSprite : mChickenSprite;
-            chicken.Body.color = kind == ChickenKind.Fast ? new Color(1f, 1f, 0.72f) : Color.white;
+            chicken.Body.sprite = mChickenSprite;
+            chicken.Body.color = Color.white;
             chicken.Body.transform.localScale = ChickenScale(kind);
-            chicken.Transform.localRotation = Quaternion.Euler(0f, 0f, 90f);
+            chicken.Transform.localRotation = Quaternion.identity;
             CreateEnemyHealthBar(chicken, new Color(0.9f, 0.18f, 0.16f));
             mEntities.Add(chicken);
         }
@@ -1122,7 +1134,7 @@ namespace Tuyoo.Game.Demo
             }
             if (entity.Kind == EntityKind.Chicken)
             {
-                float size = entity.Chicken == ChickenKind.Boss ? 0.95f : entity.Chicken == ChickenKind.Fat ? 0.72f : 0.52f;
+                float size = entity.Chicken == ChickenKind.Boss ? 1.1f : entity.Chicken == ChickenKind.Fat ? 0.88f : 0.72f;
                 return new Rect(p.x - size * 0.5f, p.y - size * 0.5f, size, size);
             }
             if (entity.Kind == EntityKind.Bullet)
@@ -1235,7 +1247,7 @@ namespace Tuyoo.Game.Demo
 
         private void RefreshPlayerHealthHud()
         {
-            float percent = Mathf.Clamp01(mGooseCount / 60f);
+            float percent = Mathf.Clamp01(mGooseCount / (float)MaxGooseCount);
             mPlayerHealthFill.rectTransform.sizeDelta = new Vector2(240f * Mathf.Max(0.1f, percent), 32f);
             mPlayerHealthFill.color = Color.Lerp(new Color(0.88f, 0.2f, 0.16f), new Color(0.21f, 0.72f, 0.32f), percent);
             mPlayerHealthText.text = "鹅群血量 " + mGooseCount;
@@ -1322,7 +1334,7 @@ namespace Tuyoo.Game.Demo
 
         private int GetWeaponDamage()
         {
-            return mWeapon == WeaponKind.Bow ? 14 : mWeapon == WeaponKind.Staff ? 28 : 10;
+            return 1;
         }
 
         private float FireBurnRate()
@@ -1371,10 +1383,7 @@ namespace Tuyoo.Game.Demo
 
         private int ChickenHealth(ChickenKind kind)
         {
-            if (kind == ChickenKind.Boss) return 800;
-            if (kind == ChickenKind.Fat) return 200;
-            if (kind == ChickenKind.Fast) return 30;
-            return 20;
+            return 2;
         }
 
         private float ChickenSpeed(ChickenKind kind)
