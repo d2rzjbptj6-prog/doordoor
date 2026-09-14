@@ -12,6 +12,8 @@ public static class GooseMergeDemoBuild
     [MenuItem("Tools/Demo/Build Goose Merge Demo/Windows")]
     public static void BuildWindows()
     {
+        ModelTableImporter.ImportDefaultModelTable(false);
+
         BuildTarget target = BuildTarget.StandaloneWindows64;
         EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTargetGroup.Standalone, target);
         PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.Mono2x);

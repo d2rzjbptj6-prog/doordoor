@@ -41,6 +41,86 @@ namespace Tuyoo.Game.Demo
             public readonly List<LevelEvent> Events = new List<LevelEvent>();
         }
 
+        private sealed class ActorConfig
+        {
+            public int Id;
+            public string Name;
+            public int BuffId;
+            public int ModelId;
+            public float BreakRadius;
+            public readonly Dictionary<string, float> Stats = new Dictionary<string, float>();
+        }
+
+        private sealed class BuffConfig
+        {
+            public int Id;
+            public string Name;
+            public int EffectId;
+            public int Priority;
+            public int PriorityGroup;
+            public int FrontBuffId;
+            public float BulletDistance;
+            public float BulletSpeed;
+            public float BreakRadius;
+            public float BattleRadius;
+        }
+
+        [System.Serializable]
+        private sealed class ModelConfigData
+        {
+            public ActorConfigData[] actors;
+            public BuffConfigData[] buffs;
+            public MonsterConfigData[] monsters;
+        }
+
+        [System.Serializable]
+        private sealed class ActorConfigData
+        {
+            public int id;
+            public string name;
+            public int buffId;
+            public int modelId;
+            public float breakValue;
+            public StatConfigData[] stats;
+        }
+
+        [System.Serializable]
+        private sealed class StatConfigData
+        {
+            public string key;
+            public float value;
+        }
+
+        [System.Serializable]
+        private sealed class BuffConfigData
+        {
+            public int id;
+            public string name;
+            public int effectId;
+            public int priority;
+            public int priorityGroup;
+            public int frontBuffId;
+            public float bulletDistance;
+            public float bulletSpeed;
+            public float breakValue;
+            public float battleValue;
+        }
+
+        [System.Serializable]
+        private sealed class MonsterConfigData
+        {
+            public int id;
+            public int stageId;
+            public int actorId;
+            public string note;
+            public int doorGroup;
+            public int count;
+            public float x;
+            public float y;
+            public string range;
+            public string blood;
+        }
+
         private sealed class Entity
         {
             public EntityKind Kind;
@@ -51,11 +131,16 @@ namespace Tuyoo.Game.Demo
             public SpriteRenderer HealthBack;
             public SpriteRenderer HealthFill;
             public float Speed;
+            public float BreakRadius;
+            public float StartY;
+            public float Range;
+            public float DamageRadius;
             public float Life;
             public float BurnDps;
             public float BurnTick;
             public float SlowTimer;
             public float MeleeTimer;
+            public int ActorId;
             public int Amount;
             public int Health;
             public int MaxHealth;
@@ -120,13 +205,23 @@ namespace Tuyoo.Game.Demo
         private readonly List<Entity> mEntities = new List<Entity>();
         private readonly List<GooseView> mGooseViews = new List<GooseView>();
         private readonly List<LevelPlan> mLevels = new List<LevelPlan>();
+        private readonly Dictionary<int, ActorConfig> mActors = new Dictionary<int, ActorConfig>();
+        private readonly Dictionary<int, BuffConfig> mBuffs = new Dictionary<int, BuffConfig>();
+        private readonly HashSet<int> mBuffHistory = new HashSet<int>();
+        private readonly Dictionary<int, int> mActiveBuffByGroup = new Dictionary<int, int>();
 
         private Sprite mSquareSprite;
         private Sprite mCircleSprite;
         private Sprite mBackgroundSprite;
         private Sprite mGooseSlingshotSprite;
+        private Sprite mGooseSlingshotLeftSprite;
+        private Sprite mGooseSlingshotRightSprite;
         private Sprite mGooseBowSprite;
+        private Sprite mGooseBowLeftSprite;
+        private Sprite mGooseBowRightSprite;
         private Sprite mGooseStaffSprite;
+        private Sprite mGooseStaffLeftSprite;
+        private Sprite mGooseStaffRightSprite;
         private Sprite mChickenSprite;
         private Sprite mFatChickenSprite;
         private Sprite mNormalGateSprite;
@@ -142,9 +237,12 @@ namespace Tuyoo.Game.Demo
         private int mFireLevel;
         private int mLightningLevel;
         private int mIceLevel;
+        private int mActiveWeaponBuffId = 1;
+        private int mActiveElementBuffId;
         private float mElapsed;
         private float mScore;
         private float mTargetX;
+        private float mMoveDirection;
         private bool mGameOver;
         private bool mVictory;
         private bool mBooted;
@@ -201,6 +299,7 @@ namespace Tuyoo.Game.Demo
             QualitySettings.vSyncCount = 0;
             SetupCamera();
             SetupSprites();
+            BuildModelTables();
             BuildLevels();
             SetupWorld();
             SetupHud();
@@ -226,9 +325,15 @@ namespace Tuyoo.Game.Demo
             mCircleSprite = CreateSprite(CreateTexture(64, 64, DrawCircleTexture), 32f);
             // Keep the supplied 768x1376 artwork at its native aspect ratio.
             mBackgroundSprite = LoadArtSprite("goose_farm_background", 1376f / 13f);
-            mGooseSlingshotSprite = LoadArtSprite("sheet_04", 340f);
-            mGooseBowSprite = LoadArtSprite("sheet_10", 340f);
-            mGooseStaffSprite = LoadArtSprite("sheet_14", 340f);
+            mGooseSlingshotLeftSprite = LoadGoosePoseSprite("sheet_04", -1);
+            mGooseSlingshotSprite = LoadGoosePoseSprite("sheet_04", 0);
+            mGooseSlingshotRightSprite = LoadGoosePoseSprite("sheet_04", 1);
+            mGooseBowLeftSprite = LoadGoosePoseSprite("sheet_10", -1);
+            mGooseBowSprite = LoadGoosePoseSprite("sheet_10", 0);
+            mGooseBowRightSprite = LoadGoosePoseSprite("sheet_10", 1);
+            mGooseStaffLeftSprite = LoadGoosePoseSprite("sheet_14", -1);
+            mGooseStaffSprite = LoadGoosePoseSprite("sheet_14", 0);
+            mGooseStaffRightSprite = LoadGoosePoseSprite("sheet_14", 1);
             mNormalGateSprite = LoadArtSprite("sheet_25", 290f);
             mFireGateSprite = LoadArtSprite("sheet_31", 310f);
             mLightningGateSprite = LoadArtSprite("sheet_34", 310f);
@@ -241,8 +346,14 @@ namespace Tuyoo.Game.Demo
             if (mGooseSlingshotSprite == null)
             {
                 mGooseSlingshotSprite = CreateSprite(CreateTexture(96, 96, DrawGooseTexture), 32f);
+                mGooseSlingshotLeftSprite = mGooseSlingshotSprite;
+                mGooseSlingshotRightSprite = mGooseSlingshotSprite;
                 mGooseBowSprite = mGooseSlingshotSprite;
+                mGooseBowLeftSprite = mGooseSlingshotSprite;
+                mGooseBowRightSprite = mGooseSlingshotSprite;
                 mGooseStaffSprite = mGooseSlingshotSprite;
+                mGooseStaffLeftSprite = mGooseSlingshotSprite;
+                mGooseStaffRightSprite = mGooseSlingshotSprite;
             }
             if (mChickenSprite == null)
             {
@@ -269,6 +380,161 @@ namespace Tuyoo.Game.Demo
                 return null;
             }
             return Sprite.Create(texture, rect, new Vector2(0.5f, 0.5f), pixelsPerUnit);
+        }
+
+        private Sprite LoadGoosePoseSprite(string name, int direction)
+        {
+            if (direction < 0)
+            {
+                return LoadArtSprite(name, new Rect(70f, 0f, 590f, 980f), 340f);
+            }
+            if (direction > 0)
+            {
+                return LoadArtSprite(name, new Rect(1390f, 0f, 590f, 980f), 340f);
+            }
+            return LoadArtSprite(name, new Rect(680f, 0f, 690f, 980f), 340f);
+        }
+
+        private void BuildModelTables()
+        {
+            mActors.Clear();
+            AddActor(1, "弹弓鹅", 1, 1, 100, "hpMax", 1, "atk", 1, "atkspd", 1);
+            AddActor(2, "弓箭鹅", 2, 2, 100, "hpMax", 2, "atk", 2, "atkspd", 2);
+            AddActor(3, "法师鹅", 3, 3, 100, "hpMax", 3, "atk", 3, "atkspd", 3);
+            AddActor(4, "普通鸡", 4, 1, 100, "hpMax", 1, "atk", 1, "atkspd", 1, "spd", 6000);
+            AddActor(5, "长矛鸡", 5, 2, 100, "hpMax", 2, "atk", 2, "atkspd", 2, "spd", 6000);
+            AddActor(6, "剑盾鸡", 6, 3, 100, "hpMax", 3, "atk", 3, "atkspd", 3, "spd", 6000);
+            AddActor(7, "武器架子1", 7, 7, 100, "hpMax", 1, "atk", 1, "def", 1, "spd", 6000);
+            AddActor(8, "武器架子2", 8, 8, 100, "hpMax", 2, "atk", 2, "def", 2, "spd", 6000);
+            AddActor(9, "鹅笼", 9, 9, 100, "hpMax", 3, "atk", 3, "def", 3, "spd", 6000);
+            AddActor(10, "倍增门", 10, 10, 120, "spd", 6000);
+            AddActor(11, "火焰门", 11, 11, 130, "spd", 6000);
+            AddActor(12, "雷门", 12, 12, 140, "spd", 6000);
+
+            mBuffs.Clear();
+            AddBuff(1, "弹弓", 1, 1, 1, 0, 200, 200, 10, 10);
+            AddBuff(2, "弓箭", 2, 2, 1, 0, 300, 300, 10, 10);
+            AddBuff(3, "法杖", 3, 3, 1, 0, 400, 400, 10, 50);
+            AddBuff(11, "火焰门", 11, 1, 2, 0, 0, 0, 0, 0);
+            AddBuff(12, "雷门", 12, 1, 2, 0, 0, 0, 0, 0);
+            AddBuff(110, "雷火弹", 110, 2, 2, 11, 0, 0, 0, 0);
+            AddBuff(111, "雷火弹", 110, 2, 2, 12, 0, 0, 0, 0);
+            LoadModelTablesFromJson();
+        }
+
+        private void AddActor(int id, string name, int buffId, int modelId, float breakValue, params object[] stats)
+        {
+            ActorConfig actor = new ActorConfig { Id = id, Name = name, BuffId = buffId, ModelId = modelId, BreakRadius = ModelBreakToWorld(breakValue) };
+            for (int i = 0; i + 1 < stats.Length; i += 2)
+            {
+                actor.Stats[stats[i].ToString()] = ConvertStatValue(stats[i].ToString(), stats[i + 1]);
+            }
+            mActors[id] = actor;
+        }
+
+        private void AddBuff(int id, string name, int effectId, int priority, int priorityGroup, int frontBuffId, float bulletDistance, float bulletSpeed, float breakValue, float battleValue)
+        {
+            mBuffs[id] = new BuffConfig
+            {
+                Id = id,
+                Name = name,
+                EffectId = effectId,
+                Priority = priority,
+                PriorityGroup = priorityGroup,
+                FrontBuffId = frontBuffId,
+                BulletDistance = bulletDistance * 0.04f,
+                BulletSpeed = bulletSpeed * 0.04f,
+                BreakRadius = Mathf.Max(0.08f, breakValue * 0.01f),
+                BattleRadius = Mathf.Max(0.08f, battleValue * 0.01f),
+            };
+        }
+
+        private float ConvertStatValue(string key, object value)
+        {
+            float number;
+            if (!float.TryParse(value.ToString(), out number))
+            {
+                return 0f;
+            }
+            return key == "spd" ? number * 0.001f : number;
+        }
+
+        private float ModelBreakToWorld(float value)
+        {
+            return Mathf.Max(0.1f, value * 0.001f);
+        }
+
+        private ActorConfig Actor(int id)
+        {
+            ActorConfig actor;
+            return mActors.TryGetValue(id, out actor) ? actor : null;
+        }
+
+        private BuffConfig Buff(int id)
+        {
+            BuffConfig buff;
+            return mBuffs.TryGetValue(id, out buff) ? buff : null;
+        }
+
+        private float ActorStat(int actorId, string key, float fallback)
+        {
+            ActorConfig actor = Actor(actorId);
+            float value;
+            return actor != null && actor.Stats.TryGetValue(key, out value) ? value : fallback;
+        }
+
+        private void LoadModelTablesFromJson()
+        {
+            TextAsset asset = Resources.Load<TextAsset>("Config/model_config");
+            if (asset == null || string.IsNullOrEmpty(asset.text))
+            {
+                return;
+            }
+
+            ModelConfigData data = JsonUtility.FromJson<ModelConfigData>(asset.text);
+            if (data == null)
+            {
+                return;
+            }
+
+            if (data.actors != null && data.actors.Length > 0)
+            {
+                mActors.Clear();
+                for (int i = 0; i < data.actors.Length; i++)
+                {
+                    ActorConfigData source = data.actors[i];
+                    ActorConfig actor = new ActorConfig
+                    {
+                        Id = source.id,
+                        Name = source.name,
+                        BuffId = source.buffId,
+                        ModelId = source.modelId,
+                        BreakRadius = ModelBreakToWorld(source.breakValue),
+                    };
+                    if (source.stats != null)
+                    {
+                        for (int statIndex = 0; statIndex < source.stats.Length; statIndex++)
+                        {
+                            StatConfigData stat = source.stats[statIndex];
+                            if (!string.IsNullOrEmpty(stat.key))
+                            {
+                                actor.Stats[stat.key] = ConvertStatValue(stat.key, stat.value);
+                            }
+                        }
+                    }
+                    mActors[actor.Id] = actor;
+                }
+            }
+
+            if (data.buffs != null && data.buffs.Length > 0)
+            {
+                mBuffs.Clear();
+                for (int i = 0; i < data.buffs.Length; i++)
+                {
+                    BuffConfigData source = data.buffs[i];
+                    AddBuff(source.id, source.name, source.effectId, source.priority, source.priorityGroup, source.frontBuffId, source.bulletDistance, source.bulletSpeed, source.breakValue, source.battleValue);
+                }
+            }
         }
 
         private void BuildLevels()
@@ -434,10 +700,16 @@ namespace Tuyoo.Game.Demo
             mLightningLevel = 0;
             mIceLevel = 0;
             mWeapon = WeaponKind.Slingshot;
+            mActiveWeaponBuffId = 1;
+            mActiveElementBuffId = 0;
+            mBuffHistory.Clear();
+            mActiveBuffByGroup.Clear();
+            GrantBuff(1, false);
             mEventIndex = 0;
             mElapsed = 0f;
             mScore = 0f;
             mTargetX = 0f;
+            mMoveDirection = 0f;
             mGameOver = false;
             mVictory = false;
             mPlayerRoot.position = new Vector3(0f, PlayerY, 0f);
@@ -459,7 +731,10 @@ namespace Tuyoo.Game.Demo
 
         private void UpdatePlayer()
         {
-            float nextX = Mathf.MoveTowards(mPlayerRoot.position.x, mTargetX, PlayerMoveSpeed * Time.deltaTime);
+            float currentX = mPlayerRoot.position.x;
+            float nextX = Mathf.MoveTowards(currentX, mTargetX, PlayerMoveSpeed * Time.deltaTime);
+            float deltaX = nextX - currentX;
+            mMoveDirection = Mathf.Abs(deltaX) > 0.001f ? Mathf.Sign(deltaX) : 0f;
             mPlayerRoot.position = new Vector3(nextX, PlayerY, 0f);
         }
 
@@ -496,8 +771,13 @@ namespace Tuyoo.Game.Demo
                 FireLaser(origin);
                 return;
             }
-            Entity bullet = CreateEntity(EntityKind.Bullet, "Shot_" + Time.frameCount, NearestLane(origin.x), origin.y, BulletSpeed);
+            BuffConfig weaponBuff = Buff(mActiveWeaponBuffId);
+            Entity bullet = CreateEntity(EntityKind.Bullet, "Shot_" + Time.frameCount, NearestLane(origin.x), origin.y, weaponBuff != null && weaponBuff.BulletSpeed > 0f ? weaponBuff.BulletSpeed : BulletSpeed);
             bullet.Transform.position = origin;
+            bullet.StartY = origin.y;
+            bullet.Range = weaponBuff != null && weaponBuff.BulletDistance > 0f ? weaponBuff.BulletDistance : 4f;
+            bullet.BreakRadius = weaponBuff != null ? weaponBuff.BreakRadius : 0.11f;
+            bullet.DamageRadius = weaponBuff != null ? weaponBuff.BattleRadius : bullet.BreakRadius;
             bullet.Body.sprite = mWeapon == WeaponKind.Bow ? mSquareSprite : mCircleSprite;
             bullet.Body.color = GetAttackColor(attack);
             bullet.Body.transform.localScale = mWeapon == WeaponKind.Staff ? new Vector3(0.25f, 0.25f, 1f) : new Vector3(0.13f, 0.22f, 1f);
@@ -567,7 +847,7 @@ namespace Tuyoo.Game.Demo
                 {
                     entity.Transform.position += Vector3.up * entity.Speed * Time.deltaTime;
                     TryResolveBulletHit(entity);
-                    entity.Consumed |= entity.Transform.position.y > SpawnY + 0.6f;
+                    entity.Consumed |= entity.Transform.position.y > SpawnY + 0.6f || entity.Transform.position.y - entity.StartY >= entity.Range;
                 }
                 else if (entity.Kind == EntityKind.Effect)
                 {
@@ -733,15 +1013,42 @@ namespace Tuyoo.Game.Demo
                 UpdateEnemyHealth(target);
                 if (target.Health <= 0)
                 {
-                    mWeapon = target.Weapon;
+                    ActorConfig actor = Actor(target.ActorId);
+                    if (actor != null)
+                    {
+                        GrantBuff(actor.BuffId, true);
+                    }
+                    else
+                    {
+                        mWeapon = target.Weapon;
+                    }
                     target.Consumed = true;
                     SpawnText(target.Transform.position, WeaponName(target.Weapon), new Color(1f, 0.82f, 0.22f), 0.45f);
-                    RefreshGooseWeaponArt();
                 }
             }
             else if (target.Kind == EntityKind.Chicken)
             {
-                ApplyChickenDamage(target, bullet.Damage, bullet.Attack);
+                ApplyBulletDamageArea(target.Transform.position, Mathf.Max(bullet.BreakRadius, bullet.DamageRadius), bullet.Damage, bullet.Attack);
+            }
+        }
+
+        private void ApplyBulletDamageArea(Vector3 center, float radius, int damage, AttackKind attack)
+        {
+            bool hitAny = false;
+            for (int i = 0; i < mEntities.Count; i++)
+            {
+                Entity target = mEntities[i];
+                if (target.Kind != EntityKind.Chicken || target.Consumed || Vector3.Distance(center, target.Transform.position) > radius)
+                {
+                    continue;
+                }
+                ApplyAttackToChicken(target, damage, attack);
+                hitAny = true;
+            }
+            if (hitAny && radius > 0.18f)
+            {
+                GameObject flash = CreateSpriteObject("DamageRadius", mEntityRoot, mCircleSprite, new Color(1f, 0.82f, 0.24f, 0.22f), center, new Vector3(radius * 2f, radius * 2f, 1f), 38);
+                mEntities.Add(new Entity { Kind = EntityKind.Effect, Root = flash, Transform = flash.transform, Body = flash.GetComponent<SpriteRenderer>(), Life = 0.16f });
             }
         }
 
@@ -881,17 +1188,101 @@ namespace Tuyoo.Game.Demo
         {
             if (element == ElementKind.Fire)
             {
-                mFireLevel = Mathf.Min(3, mFireLevel + 1);
+                GrantBuff(11, true);
             }
             else if (element == ElementKind.Lightning)
             {
-                mLightningLevel = Mathf.Min(3, mLightningLevel + 1);
+                GrantBuff(12, true);
             }
             else if (element == ElementKind.Ice)
             {
                 mIceLevel = Mathf.Min(3, mIceLevel + 1);
             }
             RefreshGooseWeaponArt();
+        }
+
+        private void GrantBuff(int buffId, bool showText)
+        {
+            BuffConfig buff = Buff(buffId);
+            if (buff == null)
+            {
+                return;
+            }
+
+            mBuffHistory.Add(buffId);
+            ApplyBuffByPriority(buff);
+
+            for (int i = 0; i < 2; i++)
+            {
+                foreach (BuffConfig candidate in mBuffs.Values)
+                {
+                    if (candidate.FrontBuffId <= 0 || candidate.FrontBuffId == buff.Id || candidate.PriorityGroup != buff.PriorityGroup || mBuffHistory.Contains(candidate.Id))
+                    {
+                        continue;
+                    }
+                    if (mBuffHistory.Contains(candidate.FrontBuffId))
+                    {
+                        mBuffHistory.Add(candidate.Id);
+                        ApplyBuffByPriority(candidate);
+                        if (showText)
+                        {
+                            SpawnText(mPlayerRoot.position + Vector3.up * 0.9f, candidate.Name, new Color(1f, 0.72f, 0.18f), 0.42f);
+                        }
+                    }
+                }
+            }
+
+            RefreshActiveBuffState();
+            RefreshGooseWeaponArt();
+        }
+
+        private void ApplyBuffByPriority(BuffConfig buff)
+        {
+            int currentId;
+            if (mActiveBuffByGroup.TryGetValue(buff.PriorityGroup, out currentId))
+            {
+                BuffConfig current = Buff(currentId);
+                if (current != null && current.Priority > buff.Priority)
+                {
+                    return;
+                }
+            }
+            mActiveBuffByGroup[buff.PriorityGroup] = buff.Id;
+        }
+
+        private void RefreshActiveBuffState()
+        {
+            int weaponBuff;
+            if (mActiveBuffByGroup.TryGetValue(1, out weaponBuff))
+            {
+                mActiveWeaponBuffId = weaponBuff;
+                if (weaponBuff == 2)
+                {
+                    mWeapon = WeaponKind.Bow;
+                }
+                else if (weaponBuff == 3)
+                {
+                    mWeapon = WeaponKind.Staff;
+                }
+                else
+                {
+                    mWeapon = WeaponKind.Slingshot;
+                }
+            }
+
+            int elementBuff;
+            mFireLevel = 0;
+            mLightningLevel = 0;
+            if (mActiveBuffByGroup.TryGetValue(2, out elementBuff))
+            {
+                mActiveElementBuffId = elementBuff;
+                mFireLevel = elementBuff == 11 || elementBuff == 110 || elementBuff == 111 ? 1 : 0;
+                mLightningLevel = elementBuff == 12 || elementBuff == 110 || elementBuff == 111 ? 1 : 0;
+            }
+            else
+            {
+                mActiveElementBuffId = 0;
+            }
         }
 
         private void DamageGoose(int amount)
@@ -978,7 +1369,9 @@ namespace Tuyoo.Game.Demo
 
         private void SpawnGate(int lane, int value)
         {
-            Entity gate = CreateEntity(EntityKind.Gate, "Gate", lane, SpawnY, BaseFallSpeed);
+            ActorConfig actor = Actor(10);
+            Entity gate = CreateEntity(EntityKind.Gate, "Gate", lane, SpawnY, ActorStat(10, "spd", BaseFallSpeed));
+            ApplyActorToEntity(gate, actor);
             gate.Amount = value;
             gate.Body.sprite = mNormalGateSprite != null ? mNormalGateSprite : mSquareSprite;
             gate.Body.color = value < 0 ? new Color(1f, 0.32f, 0.26f) : Color.white;
@@ -990,7 +1383,10 @@ namespace Tuyoo.Game.Demo
 
         private void SpawnElementGate(int lane, ElementKind element)
         {
-            Entity gate = CreateEntity(EntityKind.ElementGate, ElementName(element) + "Gate", lane, SpawnY, BaseFallSpeed);
+            int actorId = element == ElementKind.Lightning ? 12 : 11;
+            ActorConfig actor = Actor(actorId);
+            Entity gate = CreateEntity(EntityKind.ElementGate, ElementName(element) + "Gate", lane, SpawnY, ActorStat(actorId, "spd", BaseFallSpeed));
+            ApplyActorToEntity(gate, actor);
             gate.Element = element;
             gate.Health = Mathf.RoundToInt(Mathf.Max(20f, mGooseCount * GetWeaponDamage() * 0.75f));
             gate.MaxHealth = gate.Health;
@@ -1004,9 +1400,12 @@ namespace Tuyoo.Game.Demo
 
         private void SpawnWeaponRack(int lane, WeaponKind weapon)
         {
-            Entity rack = CreateEntity(EntityKind.WeaponRack, WeaponName(weapon) + "Rack", lane, SpawnY, BaseFallSpeed);
+            int actorId = weapon == WeaponKind.Staff ? 8 : 7;
+            ActorConfig actor = Actor(actorId);
+            Entity rack = CreateEntity(EntityKind.WeaponRack, WeaponName(weapon) + "Rack", lane, SpawnY, ActorStat(actorId, "spd", BaseFallSpeed));
+            ApplyActorToEntity(rack, actor);
             rack.Weapon = weapon;
-            rack.Health = Mathf.RoundToInt(Mathf.Max(24f, mGooseCount * GetWeaponDamage() * 0.9f));
+            rack.Health = Mathf.RoundToInt(Mathf.Max(1f, ActorStat(actorId, "hpMax", 1f)));
             rack.MaxHealth = rack.Health;
             rack.Body.sprite = weapon == WeaponKind.Bow ? mBowRackSprite : mStaffRackSprite;
             rack.Body.color = Color.white;
@@ -1018,10 +1417,13 @@ namespace Tuyoo.Game.Demo
 
         private void SpawnChicken(int lane, ChickenKind kind, float y, float sideOffset)
         {
-            Entity chicken = CreateEntity(EntityKind.Chicken, kind + "Chicken", lane, y, ChickenSpeed(kind));
+            int actorId = ChickenActorId(kind);
+            ActorConfig actor = Actor(actorId);
+            Entity chicken = CreateEntity(EntityKind.Chicken, kind + "Chicken", lane, y, ActorStat(actorId, "spd", ChickenSpeed(kind)));
+            ApplyActorToEntity(chicken, actor);
             chicken.Transform.position += new Vector3(sideOffset, 0f, 0f);
             chicken.Chicken = kind;
-            chicken.Health = ChickenHealth(kind);
+            chicken.Health = Mathf.RoundToInt(ActorStat(actorId, "hpMax", ChickenHealth(kind)));
             chicken.MaxHealth = chicken.Health;
             chicken.MeleeTimer = EnemyMeleeCooldown;
             chicken.Body.sprite = mChickenSprite;
@@ -1041,7 +1443,17 @@ namespace Tuyoo.Game.Demo
             body.sprite = mSquareSprite;
             body.color = Color.white;
             body.sortingOrder = kind == EntityKind.Bullet ? 30 : 12;
-            return new Entity { Kind = kind, Root = root, Transform = root.transform, Body = body, Speed = speed, Amount = 1, Health = 1, MaxHealth = 1, Damage = 1 };
+            return new Entity { Kind = kind, Root = root, Transform = root.transform, Body = body, Speed = speed, BreakRadius = 0.25f, Amount = 1, Health = 1, MaxHealth = 1, Damage = 1 };
+        }
+
+        private void ApplyActorToEntity(Entity entity, ActorConfig actor)
+        {
+            if (actor == null)
+            {
+                return;
+            }
+            entity.ActorId = actor.Id;
+            entity.BreakRadius = actor.BreakRadius;
         }
 
         private void UpdateGateVisual(Entity gate, bool pop)
@@ -1134,12 +1546,13 @@ namespace Tuyoo.Game.Demo
             }
             if (entity.Kind == EntityKind.Chicken)
             {
-                float size = entity.Chicken == ChickenKind.Boss ? 1.1f : entity.Chicken == ChickenKind.Fat ? 0.88f : 0.72f;
+                float size = Mathf.Max(entity.BreakRadius * 2f, entity.Chicken == ChickenKind.Boss ? 1.1f : entity.Chicken == ChickenKind.Fat ? 0.88f : 0.72f);
                 return new Rect(p.x - size * 0.5f, p.y - size * 0.5f, size, size);
             }
             if (entity.Kind == EntityKind.Bullet)
             {
-                return new Rect(p.x - 0.11f, p.y - 0.16f, 0.22f, 0.32f);
+                float size = Mathf.Max(0.12f, entity.BreakRadius * 2f);
+                return new Rect(p.x - size * 0.5f, p.y - size * 0.5f, size, size);
             }
             return new Rect(p.x - 0.25f, p.y - 0.25f, 0.5f, 0.5f);
         }
@@ -1329,12 +1742,13 @@ namespace Tuyoo.Game.Demo
 
         private float GetWeaponCooldown()
         {
-            return mWeapon == WeaponKind.Bow ? 0.4f : mWeapon == WeaponKind.Staff ? 0.7f : 0.6f;
+            float atkSpeed = Mathf.Max(0.1f, ActorStat(GooseActorIdForWeapon(), "atkspd", 1f));
+            return 1f / atkSpeed;
         }
 
         private int GetWeaponDamage()
         {
-            return 1;
+            return Mathf.Max(1, Mathf.RoundToInt(ActorStat(GooseActorIdForWeapon(), "atk", 1f)));
         }
 
         private float FireBurnRate()
@@ -1356,7 +1770,28 @@ namespace Tuyoo.Game.Demo
 
         private Sprite CurrentGooseSprite()
         {
-            return mWeapon == WeaponKind.Bow ? (mGooseBowSprite ?? mGooseSlingshotSprite) : mWeapon == WeaponKind.Staff ? (mGooseStaffSprite ?? mGooseSlingshotSprite) : mGooseSlingshotSprite;
+            if (mWeapon == WeaponKind.Bow)
+            {
+                return DirectionalGooseSprite(mGooseBowLeftSprite, mGooseBowSprite, mGooseBowRightSprite);
+            }
+            if (mWeapon == WeaponKind.Staff)
+            {
+                return DirectionalGooseSprite(mGooseStaffLeftSprite, mGooseStaffSprite, mGooseStaffRightSprite);
+            }
+            return DirectionalGooseSprite(mGooseSlingshotLeftSprite, mGooseSlingshotSprite, mGooseSlingshotRightSprite);
+        }
+
+        private Sprite DirectionalGooseSprite(Sprite left, Sprite back, Sprite right)
+        {
+            if (mMoveDirection < -0.01f)
+            {
+                return left ?? back ?? mGooseSlingshotSprite;
+            }
+            if (mMoveDirection > 0.01f)
+            {
+                return right ?? back ?? mGooseSlingshotSprite;
+            }
+            return back ?? mGooseSlingshotSprite;
         }
 
         private Color CurrentGooseTint()
@@ -1383,15 +1818,26 @@ namespace Tuyoo.Game.Demo
 
         private int ChickenHealth(ChickenKind kind)
         {
-            return 2;
+            return Mathf.Max(1, Mathf.RoundToInt(ActorStat(ChickenActorId(kind), "hpMax", 1f)));
         }
 
         private float ChickenSpeed(ChickenKind kind)
         {
-            if (kind == ChickenKind.Fat) return BaseFallSpeed * 0.66f;
-            if (kind == ChickenKind.Fast) return BaseFallSpeed * 1.72f;
-            if (kind == ChickenKind.Boss) return BaseFallSpeed * 0.48f;
-            return BaseFallSpeed;
+            return ActorStat(ChickenActorId(kind), "spd", BaseFallSpeed);
+        }
+
+        private int GooseActorIdForWeapon()
+        {
+            if (mActiveWeaponBuffId == 2) return 2;
+            if (mActiveWeaponBuffId == 3) return 3;
+            return 1;
+        }
+
+        private int ChickenActorId(ChickenKind kind)
+        {
+            if (kind == ChickenKind.Fat) return 5;
+            if (kind == ChickenKind.Fast || kind == ChickenKind.Boss) return 6;
+            return 4;
         }
 
         private Color GetElementColor(ElementKind element)
