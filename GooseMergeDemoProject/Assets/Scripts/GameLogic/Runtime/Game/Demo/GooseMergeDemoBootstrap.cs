@@ -15,7 +15,7 @@ namespace Tuyoo.Game.Demo
     [AddComponentMenu("Tuyoo/Demo/Goose Merge Demo")]
     public sealed class GooseMergeDemoBootstrap : MonoBehaviour
     {
-        private enum EntityKind { Gate, ElementGate, WeaponRack, Chicken, Bullet, Effect }
+        private enum EntityKind { Gate, GooseCage, ElementGate, WeaponRack, Chicken, Bullet, Effect }
         private enum ElementKind { None, Fire, Lightning, Ice }
         private enum WeaponKind { Slingshot, Bow, Staff }
         private enum ChickenKind { Normal, Fat, Fast, Boss }
@@ -132,6 +132,9 @@ namespace Tuyoo.Game.Demo
             public SpriteRenderer HealthFill;
             public float Speed;
             public float BreakRadius;
+            public float LogicalX;
+            public float LogicalY;
+            public float LogicalOffsetX;
             public float StartY;
             public float Range;
             public float DamageRadius;
@@ -163,9 +166,12 @@ namespace Tuyoo.Game.Demo
             public float ShootTimer;
         }
 
-        private const float PlayerY = -3.65f;
-        private const float SpawnY = 7.1f;
-        private const float DespawnY = -7.35f;
+        // The first goose is the shared origin reference for logical and Unity coordinates.
+        private const float PlayerY = 0f;
+        private const float CameraCenterY = 3.25f;
+        private const float CameraHalfHeight = 6.5f;
+        private const float SpawnY = CameraCenterY + CameraHalfHeight - 0.4f;
+        private const float DespawnY = CameraCenterY - CameraHalfHeight - 0.6f;
         private const float BaseFallSpeed = 3.15f;
         private const float BulletSpeed = 7.6f;
         private const float PlayerMoveSpeed = 8.2f;
@@ -177,11 +183,17 @@ namespace Tuyoo.Game.Demo
         private const int MaxGooseSlots = 7;
         private const float ApproachFarScale = 0.45f;
         private const float ApproachNearScale = 1.12f;
+        private const float FarLaneOffset = 0.62f;
+        private const float NearLaneOffset = 1.35f;
+        private const float LogicalMaxY = 14f;
+        // At logical Y=0, logical X +/-2 maps to Unity X +/-5, so one logical X unit is 2.5 Unity units.
+        private const float LogicalToWorldNearScale = 2.5f;
+        private const float LogicalToWorldFarScale = LogicalToWorldNearScale * FarLaneOffset / NearLaneOffset;
 
         private static readonly float[] LaneXs = { -1.35f, 0f, 1.35f };
         private static readonly Vector3[] GooseOffsets =
         {
-            new Vector3(0f, 0.02f, 0f),
+            new Vector3(0f, 0f, 0f),
             new Vector3(0f, 0.58f, 0f),
             new Vector3(0.48f, 0.29f, 0f),
             new Vector3(0.48f, -0.29f, 0f),
@@ -210,6 +222,7 @@ namespace Tuyoo.Game.Demo
         private readonly List<GooseView> mGooseViews = new List<GooseView>();
         private readonly List<LevelPlan> mLevels = new List<LevelPlan>();
         private readonly Dictionary<int, ActorConfig> mActors = new Dictionary<int, ActorConfig>();
+        private readonly Dictionary<int, MonsterConfigData> mMonsters = new Dictionary<int, MonsterConfigData>();
         private readonly Dictionary<int, BuffConfig> mBuffs = new Dictionary<int, BuffConfig>();
         private readonly HashSet<int> mBuffHistory = new HashSet<int>();
         private readonly Dictionary<int, int> mActiveBuffByGroup = new Dictionary<int, int>();
@@ -316,10 +329,11 @@ namespace Tuyoo.Game.Demo
         {
             GameObject cameraGo = new GameObject("DemoCamera");
             cameraGo.tag = "MainCamera";
-            cameraGo.transform.position = new Vector3(0f, 0f, -10f);
+            // Place the first goose at the lower quarter while keeping it horizontally centered.
+            cameraGo.transform.position = new Vector3(0f, CameraCenterY, -10f);
             mCamera = cameraGo.AddComponent<Camera>();
             mCamera.orthographic = true;
-            mCamera.orthographicSize = 6.5f;
+            mCamera.orthographicSize = CameraHalfHeight;
             mCamera.clearFlags = CameraClearFlags.SolidColor;
             mCamera.backgroundColor = new Color(0.68f, 0.92f, 1f);
             cameraGo.AddComponent<AudioListener>();
@@ -428,6 +442,7 @@ namespace Tuyoo.Game.Demo
         private void BuildModelTables()
         {
             mActors.Clear();
+            mMonsters.Clear();
             AddActor(1, "弹弓鹅", 1, 1, 100, "hpMax", 1, "atk", 1, "atkspd", 1);
             AddActor(2, "弓箭鹅", 2, 2, 100, "hpMax", 2, "atk", 2, "atkspd", 2);
             AddActor(3, "法师鹅", 3, 3, 100, "hpMax", 3, "atk", 3, "atkspd", 3);
@@ -449,7 +464,13 @@ namespace Tuyoo.Game.Demo
             AddBuff(12, "雷门", 12, 1, 2, 0, 0, 0, 0, 0);
             AddBuff(110, "雷火弹", 110, 2, 2, 11, 0, 0, 0, 0);
             AddBuff(111, "雷火弹", 110, 2, 2, 12, 0, 0, 0, 0);
+            AddDefaultMonster(10006, 9, "Goose Cage", "3|3|3");
             LoadModelTablesFromJson();
+        }
+
+        private void AddDefaultMonster(int id, int actorId, string note, string blood)
+        {
+            mMonsters[id] = new MonsterConfigData { id = id, actorId = actorId, note = note, count = 1, blood = blood };
         }
 
         private void AddActor(int id, string name, int buffId, int modelId, float breakValue, params object[] stats)
@@ -517,6 +538,38 @@ namespace Tuyoo.Game.Demo
             return actor != null && actor.Stats.TryGetValue(key, out value) ? value : fallback;
         }
 
+        private MonsterConfigData GooseCageMonster()
+        {
+            MonsterConfigData monster;
+            if (mMonsters.TryGetValue(10006, out monster))
+            {
+                return monster;
+            }
+
+            foreach (KeyValuePair<int, MonsterConfigData> pair in mMonsters)
+            {
+                if (pair.Value != null && pair.Value.actorId == 9)
+                {
+                    return pair.Value;
+                }
+            }
+
+            return new MonsterConfigData { id = 10006, actorId = 9, count = 1, blood = "3|3|3" };
+        }
+
+        private int GooseCageBloodValue(MonsterConfigData monster, int index, int fallback)
+        {
+            if (monster == null || string.IsNullOrEmpty(monster.blood))
+            {
+                return fallback;
+            }
+
+            string[] parts = monster.blood.Split('|');
+            int partIndex = parts.Length >= 3 ? index : Mathf.Min(index, parts.Length - 1);
+            int value;
+            return partIndex >= 0 && partIndex < parts.Length && int.TryParse(parts[partIndex], out value) ? value : fallback;
+        }
+
         private void LoadModelTablesFromJson()
         {
             TextAsset asset = Resources.Load<TextAsset>("Config/model_config");
@@ -569,45 +622,57 @@ namespace Tuyoo.Game.Demo
                     AddBuff(source.id, source.name, source.effectId, source.priority, source.priorityGroup, source.frontBuffId, source.bulletDistance, source.bulletSpeed, source.breakValue, source.battleValue);
                 }
             }
+
+            if (data.monsters != null && data.monsters.Length > 0)
+            {
+                for (int i = 0; i < data.monsters.Length; i++)
+                {
+                    MonsterConfigData source = data.monsters[i];
+                    if (source != null && source.actorId > 0)
+                    {
+                        mMonsters[source.id] = source;
+                    }
+                }
+            }
         }
 
         private void BuildLevels()
         {
             mLevels.Clear();
             mLevels.Add(Level("第1关：先打门", "开枪打 + 门会把数字打大，鹅身体穿过去才加人。",
-                C(1f, 1, ChickenKind.Normal, 3), G(3f, 0, 4), G(3f, 2, 8), C(6f, 1, ChickenKind.Normal, 4),
-                G(8f, 1, 6), G(11f, 1, 12), G(12f, 0, 14), G(12f, 2, 10), G(13.3f, 1, 16),
-                G(16f, 1, 10), C(17f, 0, ChickenKind.Normal, 4), C(17f, 1, ChickenKind.Normal, 6), C(17f, 2, ChickenKind.Normal, 4), C(23f, 1, ChickenKind.Normal, 8)));
+                C(1f, 0, ChickenKind.Normal, 3), G(3f, -1, 4), G(3f, 1, 8), C(6f, 0, ChickenKind.Normal, 4),
+                G(8f, 0, 6), G(11f, 0, 12), G(12f, -1, 14), G(12f, 1, 10), G(13.3f, 0, 16),
+                G(16f, 0, 10), C(17f, -1, ChickenKind.Normal, 4), C(17f, 0, ChickenKind.Normal, 6), C(17f, 1, ChickenKind.Normal, 4), C(23f, 0, ChickenKind.Normal, 8)));
             mLevels.Add(Level("第2关：武器架", "木桶已替换成武器架。打爆武器架才换弓或法杖。",
-                G(0.5f, 1, 8), C(3f, 1, ChickenKind.Normal, 5), R(4.5f, 0, WeaponKind.Bow), G(4.5f, 2, 12),
-                G(8f, 1, 10), R(11f, 1, WeaponKind.Bow), G(12f, 1, 14), R(13.3f, 1, WeaponKind.Staff),
-                G(15f, 0, 16), G(15f, 2, 12), G(16f, 1, 10), C(17f, 0, ChickenKind.Normal, 5), C(17f, 1, ChickenKind.Normal, 8), C(17f, 2, ChickenKind.Normal, 5), C(23f, 1, ChickenKind.Fat, 1)));
+                G(0.5f, 0, 8), C(3f, 0, ChickenKind.Normal, 5), R(4.5f, -1, WeaponKind.Bow), G(4.5f, 1, 12),
+                G(8f, 0, 10), R(11f, 0, WeaponKind.Bow), G(12f, 0, 14), R(13.3f, 0, WeaponKind.Staff),
+                G(15f, -1, 16), G(15f, 1, 12), G(16f, 0, 10), C(17f, -1, ChickenKind.Normal, 5), C(17f, 0, ChickenKind.Normal, 8), C(17f, 1, ChickenKind.Normal, 5), C(23f, 0, ChickenKind.Fat, 1)));
             mLevels.Add(Level("第3-1关：火门", "先打碎火门锁，再穿门获得 1 层火。火适合烧大肥鸡。",
-                G(0.5f, 0, 8), G(0.5f, 2, 6), C(3f, 1, ChickenKind.Normal, 4), R(4.5f, 1, WeaponKind.Bow),
-                E(7f, 1, ElementKind.Fire), C(10f, 1, ChickenKind.Fat, 1), G(11f, 1, 14), G(12f, 0, 12), R(12f, 2, WeaponKind.Staff), G(13.5f, 1, 16),
-                G(16f, 1, 8), C(17f, 0, ChickenKind.Normal, 4), C(17f, 1, ChickenKind.Normal, 6), C(17f, 2, ChickenKind.Normal, 4), C(23f, 1, ChickenKind.Fat, 1)));
+                G(0.5f, -1, 8), G(0.5f, 1, 6), C(3f, 0, ChickenKind.Normal, 4), R(4.5f, 0, WeaponKind.Bow),
+                E(7f, 0, ElementKind.Fire), C(10f, 0, ChickenKind.Fat, 1), G(11f, 0, 14), G(12f, -1, 12), R(12f, 1, WeaponKind.Staff), G(13.5f, 0, 16),
+                G(16f, 0, 8), C(17f, -1, ChickenKind.Normal, 4), C(17f, 0, ChickenKind.Normal, 6), C(17f, 1, ChickenKind.Normal, 4), C(23f, 0, ChickenKind.Fat, 1)));
             mLevels.Add(Level("第3-2关：雷门", "先打碎雷门锁，再穿门获得 1 层雷。雷会跳到附近鸡身上。",
-                G(0.5f, 0, 8), G(0.5f, 2, 6), C(3f, 1, ChickenKind.Normal, 4), R(4.5f, 1, WeaponKind.Bow),
-                E(7f, 1, ElementKind.Lightning), C(10f, 0, ChickenKind.Normal, 3), C(10f, 1, ChickenKind.Normal, 3), C(10f, 2, ChickenKind.Normal, 3),
-                G(11f, 1, 14), R(12f, 0, WeaponKind.Staff), G(12f, 2, 12), G(13.5f, 1, 16), G(16f, 1, 8), C(17f, 0, ChickenKind.Normal, 6), C(17f, 1, ChickenKind.Normal, 8), C(17f, 2, ChickenKind.Normal, 6), C(23f, 1, ChickenKind.Fat, 1)));
+                G(0.5f, -1, 8), G(0.5f, 1, 6), C(3f, 0, ChickenKind.Normal, 4), R(4.5f, 0, WeaponKind.Bow),
+                E(7f, 0, ElementKind.Lightning), C(10f, -1, ChickenKind.Normal, 3), C(10f, 0, ChickenKind.Normal, 3), C(10f, 1, ChickenKind.Normal, 3),
+                G(11f, 0, 14), R(12f, -1, WeaponKind.Staff), G(12f, 1, 12), G(13.5f, 0, 16), G(16f, 0, 8), C(17f, -1, ChickenKind.Normal, 6), C(17f, 0, ChickenKind.Normal, 8), C(17f, 1, ChickenKind.Normal, 6), C(23f, 0, ChickenKind.Fat, 1)));
             mLevels.Add(Level("第4-1关：火变强", "重复穿过不同火门，火从 1 层升到 3 层。",
-                G(0.5f, 1, 8), C(3f, 1, ChickenKind.Normal, 4), E(4.5f, 1, ElementKind.Fire), C(7f, 1, ChickenKind.Fat, 1), R(8.5f, 1, WeaponKind.Bow),
-                E(11f, 1, ElementKind.Fire), G(12f, 0, 14), R(12f, 2, WeaponKind.Staff), E(13.5f, 1, ElementKind.Fire), G(15f, 1, 16), G(16f, 1, 8),
-                C(17f, 0, ChickenKind.Normal, 4), C(17f, 1, ChickenKind.Fat, 1), C(17f, 2, ChickenKind.Normal, 4), C(23f, 0, ChickenKind.Normal, 5), C(23f, 1, ChickenKind.Fat, 1), C(23f, 2, ChickenKind.Normal, 5)));
+                G(0.5f, 0, 8), C(3f, 0, ChickenKind.Normal, 4), E(4.5f, 0, ElementKind.Fire), C(7f, 0, ChickenKind.Fat, 1), R(8.5f, 0, WeaponKind.Bow),
+                E(11f, 0, ElementKind.Fire), G(12f, -1, 14), R(12f, 1, WeaponKind.Staff), E(13.5f, 0, ElementKind.Fire), G(15f, 0, 16), G(16f, 0, 8),
+                C(17f, -1, ChickenKind.Normal, 4), C(17f, 0, ChickenKind.Fat, 1), C(17f, 1, ChickenKind.Normal, 4), C(23f, -1, ChickenKind.Normal, 5), C(23f, 0, ChickenKind.Fat, 1), C(23f, 1, ChickenKind.Normal, 5)));
             mLevels.Add(Level("第4-2关：超载", "火和雷同时存在后，只打超载爆炸，不叠播多套元素。",
-                G(0.5f, 1, 8), C(3f, 1, ChickenKind.Normal, 4), E(4.5f, 0, ElementKind.Fire), E(4.5f, 2, ElementKind.Lightning),
-                C(7f, 1, ChickenKind.Normal, 6), R(8.5f, 1, WeaponKind.Bow), E(11.5f, 0, ElementKind.Fire), E(11.5f, 2, ElementKind.Lightning),
-                C(14f, 0, ChickenKind.Normal, 4), C(14f, 1, ChickenKind.Normal, 6), C(14f, 2, ChickenKind.Normal, 4), G(15f, 1, 16), G(16f, 1, 8), C(17f, 0, ChickenKind.Normal, 6), C(17f, 1, ChickenKind.Normal, 8), C(17f, 2, ChickenKind.Normal, 6), C(24f, 1, ChickenKind.Fat, 1)));
+                G(0.5f, 0, 8), C(3f, 0, ChickenKind.Normal, 4), E(4.5f, -1, ElementKind.Fire), E(4.5f, 1, ElementKind.Lightning),
+                C(7f, 0, ChickenKind.Normal, 6), R(8.5f, 0, WeaponKind.Bow), E(11.5f, -1, ElementKind.Fire), E(11.5f, 1, ElementKind.Lightning),
+                C(14f, -1, ChickenKind.Normal, 4), C(14f, 0, ChickenKind.Normal, 6), C(14f, 1, ChickenKind.Normal, 4), G(15f, 0, 16), G(16f, 0, 8), C(17f, -1, ChickenKind.Normal, 6), C(17f, 0, ChickenKind.Normal, 8), C(17f, 1, ChickenKind.Normal, 6), C(24f, 0, ChickenKind.Fat, 1)));
             mLevels.Add(Level("第4-3关：雷变强", "重复穿过雷门，跳电次数和范围提高。",
-                G(0.5f, 1, 8), C(3f, 1, ChickenKind.Normal, 4), E(4.5f, 1, ElementKind.Lightning), C(7f, 0, ChickenKind.Normal, 3), C(7f, 1, ChickenKind.Normal, 3), C(7f, 2, ChickenKind.Normal, 3),
-                R(8.5f, 1, WeaponKind.Bow), E(11f, 1, ElementKind.Lightning), R(12f, 0, WeaponKind.Staff), G(12f, 2, 14), E(13.5f, 1, ElementKind.Lightning), G(15f, 1, 16), G(16f, 1, 8), C(17f, 0, ChickenKind.Normal, 6), C(17f, 1, ChickenKind.Normal, 8), C(17f, 2, ChickenKind.Normal, 6), C(24f, 1, ChickenKind.Fat, 1)));
+                G(0.5f, 0, 8), C(3f, 0, ChickenKind.Normal, 4), E(4.5f, 0, ElementKind.Lightning), C(7f, -1, ChickenKind.Normal, 3), C(7f, 0, ChickenKind.Normal, 3), C(7f, 1, ChickenKind.Normal, 3),
+                R(8.5f, 0, WeaponKind.Bow), E(11f, 0, ElementKind.Lightning), R(12f, -1, WeaponKind.Staff), G(12f, 1, 14), E(13.5f, 0, ElementKind.Lightning), G(15f, 0, 16), G(16f, 0, 8), C(17f, -1, ChickenKind.Normal, 6), C(17f, 0, ChickenKind.Normal, 8), C(17f, 1, ChickenKind.Normal, 6), C(24f, 0, ChickenKind.Fat, 1)));
             mLevels.Add(Level("第5关：正式关卡", "开放冰、蒸发、霜雷碎、激光、减人数门、快鸡和 Boss。",
-                G(0.5f, 0, 10), G(0.5f, 2, 6), C(3f, 0, ChickenKind.Normal, 3), C(3f, 1, ChickenKind.Fat, 1), C(3f, 2, ChickenKind.Fast, 1),
-                E(4.8f, 0, ElementKind.Fire), E(4.8f, 1, ElementKind.Lightning), E(4.8f, 2, ElementKind.Ice), C(7f, 0, ChickenKind.Normal, 4), C(7f, 1, ChickenKind.Fat, 1), C(7f, 2, ChickenKind.Fast, 1),
-                G(8f, 1, 12), G(9f, 0, 14), G(9f, 2, 10), R(10.5f, 1, WeaponKind.Bow), E(12f, 0, ElementKind.Fire), G(12f, 1, 16), E(12f, 2, ElementKind.Lightning),
-                C(13f, 1, ChickenKind.Normal, 6), R(14f, 1, WeaponKind.Staff), E(15f, 0, ElementKind.Ice), E(15f, 2, ElementKind.Fire), G(16f, 0, 18), G(16f, 2, -8),
-                G(17f, 1, 12), E(18f, 0, ElementKind.Lightning), E(18f, 1, ElementKind.Ice), E(18f, 2, ElementKind.Fire), C(19f, 0, ChickenKind.Normal, 6), C(19f, 1, ChickenKind.Normal, 8), C(19f, 2, ChickenKind.Normal, 6),
-                C(24f, 0, ChickenKind.Fast, 1), C(24f, 1, ChickenKind.Fat, 1), C(24f, 2, ChickenKind.Fast, 1), C(27f, 1, ChickenKind.Boss, 1)));
+                G(0.5f, -1, 10), G(0.5f, 1, 6), C(3f, -1, ChickenKind.Normal, 3), C(3f, 0, ChickenKind.Fat, 1), C(3f, 1, ChickenKind.Fast, 1),
+                E(4.8f, -1, ElementKind.Fire), E(4.8f, 0, ElementKind.Lightning), E(4.8f, 1, ElementKind.Ice), C(7f, -1, ChickenKind.Normal, 4), C(7f, 0, ChickenKind.Fat, 1), C(7f, 1, ChickenKind.Fast, 1),
+                G(8f, 0, 12), G(9f, -1, 14), G(9f, 1, 10), R(10.5f, 0, WeaponKind.Bow), E(12f, -1, ElementKind.Fire), G(12f, 0, 16), E(12f, 1, ElementKind.Lightning),
+                C(13f, 0, ChickenKind.Normal, 6), R(14f, 0, WeaponKind.Staff), E(15f, -1, ElementKind.Ice), E(15f, 1, ElementKind.Fire), G(16f, -1, 18), G(16f, 1, -8),
+                G(17f, 0, 12), E(18f, -1, ElementKind.Lightning), E(18f, 0, ElementKind.Ice), E(18f, 1, ElementKind.Fire), C(19f, -1, ChickenKind.Normal, 6), C(19f, 0, ChickenKind.Normal, 8), C(19f, 1, ChickenKind.Normal, 6),
+                C(24f, -1, ChickenKind.Fast, 1), C(24f, 0, ChickenKind.Fat, 1), C(24f, 1, ChickenKind.Fast, 1), C(27f, 0, ChickenKind.Boss, 1)));
         }
 
         private LevelPlan Level(string name, string tip, params LevelEvent[] events)
@@ -628,6 +693,7 @@ namespace Tuyoo.Game.Demo
             mWorldRoot = new GameObject("DemoWorld").transform;
             mBackgroundRoot = new GameObject("Background").transform;
             mBackgroundRoot.SetParent(mWorldRoot, false);
+            mBackgroundRoot.position = new Vector3(0f, mCamera.transform.position.y, 0f);
             mEntityRoot = new GameObject("Entities").transform;
             mEntityRoot.SetParent(mWorldRoot, false);
             mPlayerRoot = new GameObject("Player").transform;
@@ -809,14 +875,16 @@ namespace Tuyoo.Game.Demo
             BuffConfig weaponBuff = Buff(mActiveWeaponBuffId);
             Entity bullet = CreateEntity(EntityKind.Bullet, "Shot_" + Time.frameCount, NearestLane(origin.x), origin.y, weaponBuff != null && weaponBuff.BulletSpeed > 0f ? weaponBuff.BulletSpeed : BulletSpeed);
             bullet.Transform.position = origin;
-            bullet.StartY = origin.y;
-            bullet.Range = weaponBuff != null && weaponBuff.BulletDistance > 0f ? weaponBuff.BulletDistance : 4f;
+            UpdateLogicalPosition(bullet);
+            bullet.StartY = bullet.LogicalY;
+            float worldRange = weaponBuff != null && weaponBuff.BulletDistance > 0f ? weaponBuff.BulletDistance : 4f;
+            bullet.Range = WorldDistanceToLogicalY(worldRange);
             bullet.BreakRadius = weaponBuff != null ? weaponBuff.BreakRadius : 0.11f;
             bullet.DamageRadius = weaponBuff != null ? weaponBuff.BattleRadius : bullet.BreakRadius;
             bullet.Body.sprite = mWeapon == WeaponKind.Bow ? mSquareSprite : mCircleSprite;
             bullet.Body.color = GetAttackColor(attack);
-            bullet.Body.transform.localScale = mWeapon == WeaponKind.Staff ? new Vector3(0.25f, 0.25f, 1f) : new Vector3(0.13f, 0.22f, 1f);
-            bullet.Body.sortingOrder = 32;
+            bullet.BaseScale = mWeapon == WeaponKind.Staff ? new Vector3(0.25f, 0.25f, 1f) : new Vector3(0.13f, 0.22f, 1f);
+            ApplyEntityPerspective(bullet);
             bullet.Damage = GetWeaponDamage();
             bullet.Attack = attack;
             bullet.PierceLeft = mWeapon == WeaponKind.Bow ? 1 : 0;
@@ -880,9 +948,12 @@ namespace Tuyoo.Game.Demo
                 Entity entity = mEntities[i];
                 if (entity.Kind == EntityKind.Bullet)
                 {
-                    entity.Transform.position += Vector3.up * entity.Speed * Time.deltaTime;
+                    float motionScale = PerspectiveMotionScale(entity.LogicalY);
+                    entity.LogicalY += WorldDistanceToLogicalY(entity.Speed * motionScale * Time.deltaTime);
+                    SyncEntityPosition(entity);
+                    ApplyEntityPerspective(entity);
                     TryResolveBulletHit(entity);
-                    entity.Consumed |= entity.Transform.position.y > SpawnY + 0.6f || entity.Transform.position.y - entity.StartY >= entity.Range;
+                    entity.Consumed |= entity.LogicalY > LogicalMaxY + WorldDistanceToLogicalY(0.6f) || entity.LogicalY - entity.StartY >= entity.Range;
                 }
                 else if (entity.Kind == EntityKind.Effect)
                 {
@@ -914,10 +985,17 @@ namespace Tuyoo.Game.Demo
             }
 
             float speed = entity.Kind == EntityKind.Chicken && entity.SlowTimer > 0f ? entity.Speed * 0.35f : entity.Speed;
-            entity.Transform.position += Vector3.down * speed * Time.deltaTime;
+            float motionScale = PerspectiveMotionScale(entity.LogicalY);
+            entity.LogicalY -= WorldDistanceToLogicalY(speed * motionScale * Time.deltaTime);
+            SyncEntityPosition(entity);
             ApplyEntityPerspective(entity);
 
-            if (entity.Kind == EntityKind.Gate && playerRect.Overlaps(GetEntityRect(entity)))
+            if (entity.Kind == EntityKind.GooseCage && PlayerOverlapsEntityRadius(entity, playerRect))
+            {
+                DamageGoose(GetAttackDamage(entity));
+                entity.Consumed = true;
+            }
+            else if (entity.Kind == EntityKind.Gate && playerRect.Overlaps(GetEntityRect(entity)))
             {
                 ResolveGate(entity);
                 entity.Consumed = true;
@@ -941,6 +1019,19 @@ namespace Tuyoo.Game.Demo
         {
             float speed = chicken.SlowTimer > 0f ? chicken.Speed * 0.35f : chicken.Speed;
             Vector3 current = chicken.Transform.position;
+            if (chicken.LogicalY > WorldToLogicalY(EnemyMeleeY))
+            {
+                float motionScale = PerspectiveMotionScale(chicken.LogicalY);
+                float worldStep = speed * motionScale * Time.deltaTime;
+                float previousX = current.x;
+                chicken.LogicalY -= WorldDistanceToLogicalY(worldStep);
+                float targetLogicalX = GetPlayerMeleeLogicalX() - chicken.LogicalOffsetX;
+                chicken.LogicalX = Mathf.MoveTowards(chicken.LogicalX, targetLogicalX, WorldDistanceToLogicalX(worldStep * 0.85f, chicken.LogicalY));
+                SyncEntityPosition(chicken);
+                UpdateChickenDirection(chicken, chicken.Transform.position.x - previousX);
+                return;
+            }
+
             Vector3 target = new Vector3(mPlayerRoot.position.x, EnemyMeleeY, current.z);
             float meleeDistance = Mathf.Max(0.42f, chicken.BreakRadius + 0.22f);
             Vector3 offset = target - current;
@@ -949,11 +1040,13 @@ namespace Tuyoo.Game.Demo
             {
                 Vector3 next = Vector3.MoveTowards(current, target, speed * Time.deltaTime);
                 chicken.Transform.position = next;
+                UpdateLogicalPosition(chicken);
                 UpdateChickenDirection(chicken, next.x - current.x);
                 return;
             }
 
             chicken.Transform.position = new Vector3(current.x, Mathf.Min(current.y, EnemyMeleeY), current.z);
+            UpdateLogicalPosition(chicken);
             UpdateChickenDirection(chicken, target.x - current.x);
             chicken.MeleeTimer -= Time.deltaTime;
             if (chicken.MeleeTimer <= 0f)
@@ -1041,7 +1134,11 @@ namespace Tuyoo.Game.Demo
 
         private void ResolveBulletTarget(Entity bullet, Entity target)
         {
-            if (target.Kind == EntityKind.Gate)
+            if (target.Kind == EntityKind.GooseCage)
+            {
+                ApplyGooseCageDamage(target, bullet.Damage);
+            }
+            else if (target.Kind == EntityKind.Gate)
             {
                 int delta = Mathf.Max(1, bullet.Damage / 10);
                 target.Amount = target.Amount >= 0 ? target.Amount + delta : Mathf.Min(-1, target.Amount + delta);
@@ -1231,6 +1328,26 @@ namespace Tuyoo.Game.Demo
                 chicken.Consumed = true;
                 mScore += chicken.Chicken == ChickenKind.Boss ? 200f : chicken.Chicken == ChickenKind.Fat ? 40f : 12f;
                 SpawnDeathEffect(chicken, attack);
+            }
+        }
+
+        private void ApplyGooseCageDamage(Entity cage, int damage)
+        {
+            if (cage.Consumed)
+            {
+                return;
+            }
+
+            cage.Health -= CalculateDamage(damage, cage.Defense);
+            UpdateEnemyHealth(cage);
+            if (cage.Health <= 0)
+            {
+                cage.Consumed = true;
+                int before = mGooseCount;
+                AddGoose(cage.Amount);
+                int added = mGooseCount - before;
+                SpawnText(cage.Transform.position, "+" + added, new Color(0.22f, 0.82f, 0.37f), 0.5f);
+                mScore += added * 8f;
             }
         }
 
@@ -1448,6 +1565,12 @@ namespace Tuyoo.Game.Demo
 
         private void SpawnGate(int lane, int value)
         {
+            if (value >= 0)
+            {
+                SpawnGooseCage(lane);
+                return;
+            }
+
             ActorConfig actor = Actor(10);
             Entity gate = CreateEntity(EntityKind.Gate, "Gate", lane, SpawnY, ActorMoveSpeed(10, BaseFallSpeed));
             ApplyActorToEntity(gate, actor);
@@ -1458,6 +1581,24 @@ namespace Tuyoo.Game.Demo
             gate.Label = CreateWorldLabel(gate.Root.transform, "", new Vector3(0f, 0.38f, 0f), 0.16f, value < 0 ? new Color(0.9f, 0.05f, 0.03f) : new Color(0.1f, 0.28f, 0.12f));
             UpdateGateVisual(gate, false);
             mEntities.Add(gate);
+        }
+
+        private void SpawnGooseCage(int lane)
+        {
+            MonsterConfigData monster = GooseCageMonster();
+            int actorId = monster != null && monster.actorId > 0 ? monster.actorId : 9;
+            ActorConfig actor = Actor(actorId);
+            Entity cage = CreateEntity(EntityKind.GooseCage, "GooseCage", lane, SpawnY, ActorMoveSpeed(actorId, BaseFallSpeed));
+            ApplyActorToEntity(cage, actor);
+            cage.Health = Mathf.Max(1, GooseCageBloodValue(monster, 1, Mathf.RoundToInt(ActorStat(actorId, "hpMax", 3f))));
+            cage.MaxHealth = cage.Health;
+            cage.Amount = Mathf.Max(1, GooseCageBloodValue(monster, 2, monster != null && monster.count > 0 ? monster.count : 3));
+            cage.Body.sprite = mNormalGateSprite != null ? mNormalGateSprite : mSquareSprite;
+            cage.Body.color = new Color(0.82f, 0.58f, 0.32f);
+            SetEntityBaseScale(cage, new Vector3(0.62f, 0.62f, 1f));
+            cage.Label = CreateWorldLabel(cage.Root.transform, "x" + cage.Amount, new Vector3(0f, 0.46f, 0f), 0.15f, new Color(0.18f, 0.1f, 0.03f));
+            CreateEnemyHealthBar(cage, new Color(0.95f, 0.63f, 0.2f));
+            mEntities.Add(cage);
         }
 
         private void SpawnElementGate(int lane, ElementKind element)
@@ -1500,7 +1641,8 @@ namespace Tuyoo.Game.Demo
             ActorConfig actor = Actor(actorId);
             Entity chicken = CreateEntity(EntityKind.Chicken, kind + "Chicken", lane, y, ChickenSpeed(kind));
             ApplyActorToEntity(chicken, actor);
-            chicken.Transform.position += new Vector3(sideOffset, 0f, 0f);
+            chicken.LogicalOffsetX = sideOffset / Mathf.Max(0.001f, PerspectiveXScale(chicken.LogicalY));
+            SyncEntityPosition(chicken);
             chicken.Chicken = kind;
             chicken.Health = Mathf.RoundToInt(ActorStat(actorId, "hpMax", ChickenHealth(kind)));
             chicken.MaxHealth = chicken.Health;
@@ -1517,12 +1659,14 @@ namespace Tuyoo.Game.Demo
         {
             GameObject root = new GameObject(name);
             root.transform.SetParent(mEntityRoot, false);
-            root.transform.position = new Vector3(LaneXs[Mathf.Clamp(lane, 0, LaneXs.Length - 1)], y, 0f);
+            int lineX = Mathf.Clamp(lane, -1, 1);
+            float logicalY = WorldToLogicalY(y);
+            root.transform.position = new Vector3(LogicalToWorldX(lineX, logicalY), LogicalToWorldY(logicalY), 0f);
             SpriteRenderer body = root.AddComponent<SpriteRenderer>();
             body.sprite = mSquareSprite;
             body.color = Color.white;
             body.sortingOrder = kind == EntityKind.Bullet ? 30 : 12;
-            return new Entity { Kind = kind, Root = root, Transform = root.transform, Body = body, Speed = speed, BreakRadius = 0.25f, Amount = 1, Health = 1, MaxHealth = 1, Damage = 1, Defense = 1f, BaseScale = Vector3.one };
+            return new Entity { Kind = kind, Root = root, Transform = root.transform, Body = body, Speed = speed, BreakRadius = 0.25f, LogicalX = lineX, LogicalY = logicalY, Amount = 1, Health = 1, MaxHealth = 1, Damage = 1, Defense = 1f, BaseScale = Vector3.one };
         }
 
         private void ApplyActorToEntity(Entity entity, ActorConfig actor)
@@ -1615,12 +1759,25 @@ namespace Tuyoo.Game.Demo
             return new Rect(mPlayerRoot.position.x - 1.0f, PlayerY - 0.12f, 2.0f, height);
         }
 
+        private bool PlayerOverlapsEntityRadius(Entity entity, Rect playerRect)
+        {
+            Vector2 center = new Vector2(entity.Transform.position.x, entity.Transform.position.y);
+            Vector2 closest = new Vector2(Mathf.Clamp(center.x, playerRect.xMin, playerRect.xMax), Mathf.Clamp(center.y, playerRect.yMin, playerRect.yMax));
+            float radius = Mathf.Max(0.55f, entity.BreakRadius);
+            return (closest - center).sqrMagnitude <= radius * radius;
+        }
+
         private Rect GetEntityRect(Entity entity)
         {
             Vector3 p = entity.Transform.position;
             if (entity.Kind == EntityKind.Gate || entity.Kind == EntityKind.ElementGate)
             {
                 return new Rect(p.x - 0.55f, p.y - 0.8f, 1.1f, 1.6f);
+            }
+            if (entity.Kind == EntityKind.GooseCage)
+            {
+                float size = Mathf.Max(0.75f, entity.BreakRadius * 2f);
+                return new Rect(p.x - size * 0.5f, p.y - size * 0.5f, size, size);
             }
             if (entity.Kind == EntityKind.WeaponRack)
             {
@@ -1685,18 +1842,7 @@ namespace Tuyoo.Game.Demo
 
         private int NearestLane(float x)
         {
-            int best = 0;
-            float bestDistance = float.MaxValue;
-            for (int i = 0; i < LaneXs.Length; i++)
-            {
-                float distance = Mathf.Abs(x - LaneXs[i]);
-                if (distance < bestDistance)
-                {
-                    best = i;
-                    bestDistance = distance;
-                }
-            }
-            return best;
+            return Mathf.Clamp(Mathf.RoundToInt(x / Mathf.Max(0.001f, NearLaneOffset)), -1, 1);
         }
 
         private void RefreshHud()
@@ -1901,7 +2047,7 @@ namespace Tuyoo.Game.Demo
         private void UpdateChickenDirection(Entity chicken, float moveX)
         {
             Vector3 scale = GetEntityPerspectiveScale(chicken);
-            chicken.Body.sortingOrder = EntityPerspectiveSortingOrder(chicken.Transform.position.y);
+            chicken.Body.sortingOrder = EntityPerspectiveSortingOrder(chicken.LogicalY);
             if (moveX < -0.01f)
             {
                 chicken.Body.sprite = mChickenLeftSprite ?? mChickenSprite;
@@ -1927,32 +2073,99 @@ namespace Tuyoo.Game.Demo
 
         private void ApplyEntityPerspective(Entity entity)
         {
-            if (entity == null || entity.Body == null || entity.Kind == EntityKind.Bullet || entity.Kind == EntityKind.Effect)
+            if (entity == null || entity.Body == null || entity.Kind == EntityKind.Effect)
             {
                 return;
             }
 
             entity.Body.transform.localScale = GetEntityPerspectiveScale(entity);
-            entity.Body.sortingOrder = EntityPerspectiveSortingOrder(entity.Transform.position.y);
+            entity.Body.sortingOrder = EntityPerspectiveSortingOrder(entity.LogicalY);
         }
 
         private Vector3 GetEntityPerspectiveScale(Entity entity)
         {
             Vector3 baseScale = entity.BaseScale == Vector3.zero ? Vector3.one : entity.BaseScale;
-            return baseScale * EntityPerspectiveScale(entity.Transform.position.y);
+            return baseScale * EntityPerspectiveScale(entity.LogicalY);
         }
 
-        private float EntityPerspectiveScale(float y)
+        private float EntityPerspectiveScale(float logicalY)
         {
-            float t = Mathf.InverseLerp(SpawnY, EnemyMeleeY, y);
-            t = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(t));
-            return Mathf.Lerp(ApproachFarScale, ApproachNearScale, t);
+            float progress = LogicalPerspectiveProgress(logicalY);
+            return Mathf.Lerp(ApproachNearScale, ApproachFarScale, progress);
         }
 
-        private int EntityPerspectiveSortingOrder(float y)
+        private float PerspectiveMotionScale(float logicalY)
         {
-            float t = Mathf.InverseLerp(SpawnY, EnemyMeleeY, y);
-            return Mathf.RoundToInt(Mathf.Lerp(10f, 19f, Mathf.Clamp01(t)));
+            return Mathf.Lerp(ApproachNearScale, ApproachFarScale, LogicalPerspectiveProgress(logicalY));
+        }
+
+        private int EntityPerspectiveSortingOrder(float logicalY)
+        {
+            return Mathf.RoundToInt(Mathf.Lerp(19f, 10f, LogicalPerspectiveProgress(logicalY)));
+        }
+
+        private float LogicalPerspectiveProgress(float logicalY)
+        {
+            return Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(logicalY / LogicalMaxY));
+        }
+
+        private void SyncEntityPosition(Entity entity)
+        {
+            float logicalX = entity.LogicalX + entity.LogicalOffsetX;
+            entity.Transform.position = new Vector3(LogicalToWorldX(logicalX, entity.LogicalY), LogicalToWorldY(entity.LogicalY), entity.Transform.position.z);
+        }
+
+        private float LogicalToWorldX(float logicalX, float logicalY)
+        {
+            return logicalX * PerspectiveXScale(logicalY);
+        }
+
+        private float WorldToLogicalX(float worldX, float logicalY)
+        {
+            return worldX / Mathf.Max(0.001f, PerspectiveXScale(logicalY));
+        }
+
+        private float WorldDistanceToLogicalX(float worldDistance, float logicalY)
+        {
+            return worldDistance / Mathf.Max(0.001f, PerspectiveXScale(logicalY));
+        }
+
+        private float GetPlayerMeleeLogicalX()
+        {
+            return WorldToLogicalX(mPlayerRoot.position.x, WorldToLogicalY(EnemyMeleeY));
+        }
+
+        private void UpdateLogicalPosition(Entity entity)
+        {
+            entity.LogicalY = WorldToLogicalY(entity.Transform.position.y);
+            entity.LogicalX = WorldToLogicalX(entity.Transform.position.x, entity.LogicalY) - entity.LogicalOffsetX;
+        }
+
+        private float LogicalOriginWorldY()
+        {
+            // Keep logical (0, 0) aligned with Unity world (0, 0) for direct comparison.
+            return 0f;
+        }
+
+        private float LogicalToWorldY(float logicalY)
+        {
+            return Mathf.Lerp(LogicalOriginWorldY(), SpawnY, logicalY / LogicalMaxY);
+        }
+
+        private float WorldToLogicalY(float worldY)
+        {
+            return Mathf.InverseLerp(LogicalOriginWorldY(), SpawnY, worldY) * LogicalMaxY;
+        }
+
+        private float WorldDistanceToLogicalY(float worldDistance)
+        {
+            return worldDistance / Mathf.Max(0.001f, SpawnY - LogicalOriginWorldY()) * LogicalMaxY;
+        }
+
+        private float PerspectiveXScale(float logicalY)
+        {
+            float progress = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(logicalY / LogicalMaxY));
+            return Mathf.Lerp(LogicalToWorldNearScale, LogicalToWorldFarScale, progress);
         }
 
         private int ChickenHealth(ChickenKind kind)
