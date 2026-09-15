@@ -73,6 +73,34 @@ namespace Tuyoo.Game.Demo
             public MonsterConfigData[] monsters;
         }
 
+        [Serializable]
+        private sealed class LevelConfigData
+        {
+            public LevelData[] levels;
+        }
+
+        [Serializable]
+        private sealed class LevelData
+        {
+            public int stageId;
+            public string name;
+            public string tip;
+            public LevelEventData[] events;
+        }
+
+        [Serializable]
+        private sealed class LevelEventData
+        {
+            public float time;
+            public int kind;
+            public int lane;
+            public int value;
+            public int element;
+            public int weapon;
+            public int chicken;
+            public int count;
+        }
+
         [System.Serializable]
         private sealed class ActorConfigData
         {
@@ -337,6 +365,7 @@ namespace Tuyoo.Game.Demo
             SetupSprites();
             BuildModelTables();
             BuildLevels();
+            LoadLevelsFromJson();
             SetupWorld();
             SetupHud();
             RestartRun();
@@ -651,6 +680,96 @@ namespace Tuyoo.Game.Demo
                     }
                 }
             }
+        }
+
+        private void LoadLevelsFromJson()
+        {
+            TextAsset asset = Resources.Load<TextAsset>("Config/level_config");
+            if (asset == null || string.IsNullOrEmpty(asset.text))
+            {
+                return;
+            }
+
+            LevelConfigData data;
+            try
+            {
+                data = JsonUtility.FromJson<LevelConfigData>(asset.text);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning("Level config parse failed; using built-in levels: " + ex.Message);
+                return;
+            }
+            if (data == null || data.levels == null || data.levels.Length == 0)
+            {
+                Debug.LogWarning("Level config is empty; using built-in levels");
+                return;
+            }
+
+            List<LevelPlan> imported = new List<LevelPlan>();
+            for (int levelIndex = 0; levelIndex < data.levels.Length; levelIndex++)
+            {
+                LevelData source = data.levels[levelIndex];
+                if (source == null || source.stageId <= 0)
+                {
+                    continue;
+                }
+                LevelPlan level = new LevelPlan
+                {
+                    Name = string.IsNullOrEmpty(source.name) ? "关卡 " + source.stageId : source.name,
+                    Tip = string.IsNullOrEmpty(source.tip) ? "" : source.tip,
+                };
+                if (source.events != null)
+                {
+                    for (int eventIndex = 0; eventIndex < source.events.Length; eventIndex++)
+                    {
+                        LevelEventData evt = source.events[eventIndex];
+                        LevelEvent converted;
+                        if (TryConvertLevelEvent(evt, out converted))
+                        {
+                            level.Events.Add(converted);
+                        }
+                    }
+                }
+                level.Events.Sort((a, b) => a.Time.CompareTo(b.Time));
+                imported.Add(level);
+            }
+            if (imported.Count > 0)
+            {
+                mLevels.Clear();
+                mLevels.AddRange(imported);
+                Debug.Log("Loaded imported levels: " + imported.Count);
+            }
+        }
+
+        private bool TryConvertLevelEvent(LevelEventData source, out LevelEvent converted)
+        {
+            converted = null;
+            if (source == null || source.lane < -1 || source.lane > 1 || source.time < 0f)
+            {
+                return false;
+            }
+            if (source.kind == 0)
+            {
+                converted = G(source.time, source.lane, source.value);
+                return true;
+            }
+            if (source.kind == 1 && source.element >= 1 && source.element <= 3)
+            {
+                converted = E(source.time, source.lane, (ElementKind)source.element);
+                return true;
+            }
+            if (source.kind == 2 && source.weapon >= 1 && source.weapon <= 2)
+            {
+                converted = R(source.time, source.lane, source.weapon == 1 ? WeaponKind.Bow : WeaponKind.Staff);
+                return true;
+            }
+            if (source.kind == 3 && source.chicken >= 0 && source.chicken <= 3 && source.count > 0)
+            {
+                converted = C(source.time, source.lane, (ChickenKind)source.chicken, source.count);
+                return true;
+            }
+            return false;
         }
 
         private void BuildLevels()

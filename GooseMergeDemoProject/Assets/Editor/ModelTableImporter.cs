@@ -10,6 +10,7 @@ using UnityEngine;
 public static class ModelTableImporter
 {
     private const string OutputPath = "Assets/Resources/Config/model_config.json";
+    private const string LevelOutputPath = "Assets/Resources/Config/level_config.json";
 
     [Serializable]
     private sealed class ModelConfigData
@@ -17,6 +18,34 @@ public static class ModelTableImporter
         public ActorConfigData[] actors;
         public BuffConfigData[] buffs;
         public MonsterConfigData[] monsters;
+    }
+
+    [Serializable]
+    private sealed class LevelConfigData
+    {
+        public LevelData[] levels;
+    }
+
+    [Serializable]
+    private sealed class LevelData
+    {
+        public int stageId;
+        public string name;
+        public string tip;
+        public LevelEventData[] events;
+    }
+
+    [Serializable]
+    private sealed class LevelEventData
+    {
+        public float time;
+        public int kind;
+        public int lane;
+        public int value;
+        public int element;
+        public int weapon;
+        public int chicken;
+        public int count;
     }
 
     [Serializable]
@@ -87,6 +116,34 @@ public static class ModelTableImporter
         ImportModelTable(xlsxPath, true);
     }
 
+    [MenuItem("Tools/Demo/Import Level Table")]
+    public static void ImportLevelTableMenu()
+    {
+        string xlsxPath = EditorUtility.OpenFilePanel("Select level source workbook", Application.dataPath, "xlsx");
+        if (!string.IsNullOrEmpty(xlsxPath))
+        {
+            ImportLevelTable(xlsxPath, true);
+        }
+    }
+
+    public static bool ImportDefaultLevelTableBatch()
+    {
+        string[] candidates =
+        {
+            Path.Combine(Path.GetDirectoryName(Application.dataPath), "level_source.xlsx"),
+            Path.Combine(Path.GetDirectoryName(Application.dataPath), "关卡source_两路_教学12实战3.xlsx"),
+        };
+        for (int i = 0; i < candidates.Length; i++)
+        {
+            if (File.Exists(candidates[i]))
+            {
+                return ImportLevelTable(candidates[i], false);
+            }
+        }
+        Debug.LogWarning("Level source workbook not found. Use Tools/Demo/Import Level Table.");
+        return false;
+    }
+
     public static void ImportDefaultModelTableBatch()
     {
         ImportDefaultModelTable(false);
@@ -141,6 +198,43 @@ public static class ModelTableImporter
         }
     }
 
+    private static bool ImportLevelTable(string xlsxPath, bool showDialog)
+    {
+        try
+        {
+            Dictionary<string, SheetData> workbook = ReadWorkbook(xlsxPath);
+            SheetData source = GetSheet(workbook, "source");
+            LevelConfigData config = new LevelConfigData { levels = ParseLevels(source).ToArray() };
+            if (config.levels.Length == 0)
+            {
+                throw new InvalidDataException("No level rows found in source sheet");
+            }
+
+            string outputFullPath = Path.GetFullPath(LevelOutputPath);
+            Directory.CreateDirectory(Path.GetDirectoryName(outputFullPath));
+            File.WriteAllText(outputFullPath, JsonUtility.ToJson(config, true));
+            AssetDatabase.ImportAsset(LevelOutputPath, ImportAssetOptions.ForceUpdate);
+            AssetDatabase.Refresh();
+
+            string message = $"Imported level table: {config.levels.Length} levels, {CountLevelEvents(config)} events";
+            Debug.Log(message);
+            if (showDialog)
+            {
+                EditorUtility.DisplayDialog("Level table imported", message, "OK");
+            }
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError("Level table import failed: " + ex);
+            if (showDialog)
+            {
+                EditorUtility.DisplayDialog("Level table import failed", ex.Message, "OK");
+            }
+            return false;
+        }
+    }
+
     private static string FindDefaultModelPath()
     {
         string projectPath = Path.GetFullPath(Path.Combine(Application.dataPath, ".."));
@@ -181,6 +275,177 @@ public static class ModelTableImporter
             actors.Add(actor);
         }
         return actors;
+    }
+
+    private static List<LevelData> ParseLevels(SheetData sheet)
+    {
+        Dictionary<string, int> columns = FindLevelColumns(sheet);
+        List<LevelData> levels = new List<LevelData>();
+        Dictionary<int, LevelData> byStage = new Dictionary<int, LevelData>();
+        int currentStageId = 0;
+        for (int rowIndex = columns["header"] + 1; rowIndex < sheet.Rows.Count; rowIndex++)
+        {
+            Dictionary<int, string> row = sheet.Rows[rowIndex];
+            int parsedStage = ReadInt(row, columns["stage"], 0);
+            if (parsedStage > 0)
+            {
+                currentStageId = parsedStage;
+            }
+            if (currentStageId <= 0)
+            {
+                continue;
+            }
+
+            LevelData level;
+            if (!byStage.TryGetValue(currentStageId, out level))
+            {
+                level = new LevelData
+                {
+                    stageId = currentStageId,
+                    name = "关卡 " + currentStageId,
+                    tip = "Imported from level source",
+                    events = new LevelEventData[0],
+                };
+                byStage.Add(currentStageId, level);
+                levels.Add(level);
+            }
+
+            float time = ReadTimeStart(row, columns["time"]);
+            List<LevelEventData> rowEvents = new List<LevelEventData>();
+            ParseLevelToken(ReadString(row, columns["left"]), time, -1, rowEvents, currentStageId, rowIndex + 1);
+            ParseLevelToken(ReadString(row, columns["right"]), time, 1, rowEvents, currentStageId, rowIndex + 1);
+            if (rowEvents.Count > 0)
+            {
+                List<LevelEventData> allEvents = new List<LevelEventData>(level.events);
+                allEvents.AddRange(rowEvents);
+                level.events = allEvents.ToArray();
+            }
+        }
+
+        for (int i = 0; i < levels.Count; i++)
+        {
+            Array.Sort(levels[i].events, (a, b) => a.time.CompareTo(b.time));
+        }
+        return levels;
+    }
+
+    private static Dictionary<string, int> FindLevelColumns(SheetData sheet)
+    {
+        for (int rowIndex = 0; rowIndex < sheet.Rows.Count; rowIndex++)
+        {
+            Dictionary<int, string> row = sheet.Rows[rowIndex];
+            int stage = FindColumn(row, "关卡", "stage", "stageid");
+            int left = FindColumn(row, "左", "left");
+            int right = FindColumn(row, "右", "right");
+            int time = FindColumn(row, "秒", "time");
+            if (stage > 0 && left > 0 && right > 0 && time > 0)
+            {
+                return new Dictionary<string, int>
+                {
+                    ["header"] = rowIndex,
+                    ["stage"] = stage,
+                    ["left"] = left,
+                    ["right"] = right,
+                    ["time"] = time,
+                };
+            }
+        }
+        throw new InvalidDataException("source sheet must contain 关卡、左、右、秒 columns");
+    }
+
+    private static int FindColumn(Dictionary<int, string> row, params string[] names)
+    {
+        foreach (KeyValuePair<int, string> pair in row)
+        {
+            string value = (pair.Value ?? string.Empty).Trim();
+            for (int i = 0; i < names.Length; i++)
+            {
+                if (string.Equals(value, names[i], StringComparison.OrdinalIgnoreCase))
+                {
+                    return pair.Key;
+                }
+            }
+        }
+        return 0;
+    }
+
+    private static float ReadTimeStart(Dictionary<int, string> row, int column)
+    {
+        string text = ReadString(row, column).Trim();
+        if (string.IsNullOrEmpty(text))
+        {
+            return 0f;
+        }
+        string first = text.Split('-')[0].Trim();
+        float value;
+        return float.TryParse(first, NumberStyles.Float, CultureInfo.InvariantCulture, out value) ? value : 0f;
+    }
+
+    private static void ParseLevelToken(string token, float time, int lane, List<LevelEventData> events, int stageId, int rowNumber)
+    {
+        token = (token ?? string.Empty).Trim();
+        if (string.IsNullOrEmpty(token) || token == "空")
+        {
+            return;
+        }
+
+        if (token.StartsWith("门+", StringComparison.Ordinal) || token.StartsWith("门-", StringComparison.Ordinal))
+        {
+            int value = ParseSuffixInt(token.Substring(1), 0);
+            events.Add(new LevelEventData { time = time, kind = 0, lane = lane, value = value });
+            return;
+        }
+        if (token == "火锁" || token == "雷锁" || token == "冰锁")
+        {
+            int element = token == "火锁" ? 1 : token == "雷锁" ? 2 : 3;
+            events.Add(new LevelEventData { time = time, kind = 1, lane = lane, element = element });
+            return;
+        }
+        if (token == "弓箱" || token == "杖箱")
+        {
+            events.Add(new LevelEventData { time = time, kind = 2, lane = lane, weapon = token == "弓箱" ? 1 : 2 });
+            return;
+        }
+        if (token.StartsWith("鸡", StringComparison.Ordinal))
+        {
+            if (token == "鸡boss")
+            {
+                events.Add(new LevelEventData { time = time, kind = 3, lane = lane, chicken = 3, count = 1 });
+                return;
+            }
+            int count = ParseSuffixInt(token.Substring(1), 0);
+            if (count > 0)
+            {
+                events.Add(new LevelEventData { time = time, kind = 3, lane = lane, chicken = 0, count = count });
+                return;
+            }
+        }
+        if (token == "肥鸡" || token == "快鸡")
+        {
+            events.Add(new LevelEventData { time = time, kind = 3, lane = lane, chicken = token == "肥鸡" ? 1 : 2, count = 1 });
+            return;
+        }
+        Debug.LogWarning($"Unsupported level token '{token}' at stage {stageId}, source row {rowNumber}");
+    }
+
+    private static int ParseSuffixInt(string text, int fallback)
+    {
+        int value;
+        return int.TryParse(text.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out value) ? value : fallback;
+    }
+
+    private static int CountLevelEvents(LevelConfigData config)
+    {
+        int count = 0;
+        if (config.levels == null)
+        {
+            return count;
+        }
+        for (int i = 0; i < config.levels.Length; i++)
+        {
+            count += config.levels[i].events != null ? config.levels[i].events.Length : 0;
+        }
+        return count;
     }
 
     private static List<BuffConfigData> ParseBuffs(SheetData sheet)
@@ -356,7 +621,10 @@ public static class ModelTableImporter
             XmlAttribute target = node.Attributes["Target"];
             if (id != null && target != null)
             {
-                relationships[id.Value] = "xl/" + target.Value.TrimStart('/');
+                string targetPath = target.Value.Replace('\\', '/');
+                relationships[id.Value] = targetPath.StartsWith("/", StringComparison.Ordinal)
+                    ? targetPath.TrimStart('/')
+                    : "xl/" + targetPath;
             }
         }
         return relationships;
