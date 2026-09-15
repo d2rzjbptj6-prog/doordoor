@@ -187,6 +187,7 @@ namespace Tuyoo.Game.Demo
         private const float FarLaneOffset = 0.62f;
         private const float NearLaneOffset = 1.35f;
         private const float LogicalMaxY = 14f;
+        private const float ChickenAcquireTargetLogicalY = 5f;
         private const float PlayerMinLogicalX = -1.5f;
         private const float PlayerMaxLogicalX = 1.5f;
         private const float CameraMaxWorldOffsetX = 0.5f;
@@ -1109,8 +1110,12 @@ namespace Tuyoo.Game.Demo
                 float worldStep = speed * motionScale * Time.deltaTime;
                 float previousX = current.x;
                 chicken.LogicalY -= WorldDistanceToLogicalY(worldStep);
-                float targetLogicalX = GetPlayerMeleeLogicalX() - chicken.LogicalOffsetX;
-                chicken.LogicalX = Mathf.MoveTowards(chicken.LogicalX, targetLogicalX, WorldDistanceToLogicalX(worldStep * 0.85f, chicken.LogicalY));
+                // Stay in the spawn lane until entering the target acquisition zone.
+                if (chicken.LogicalY < ChickenAcquireTargetLogicalY)
+                {
+                    float targetLogicalX = GetPlayerMeleeLogicalX() - chicken.LogicalOffsetX;
+                    chicken.LogicalX = Mathf.MoveTowards(chicken.LogicalX, targetLogicalX, WorldDistanceToLogicalX(worldStep * 0.85f, chicken.LogicalY));
+                }
                 SyncEntityPosition(chicken);
                 UpdateChickenDirection(chicken, chicken.Transform.position.x - previousX);
                 return;
