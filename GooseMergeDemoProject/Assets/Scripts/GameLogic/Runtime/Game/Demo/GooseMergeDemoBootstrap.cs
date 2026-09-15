@@ -176,6 +176,8 @@ namespace Tuyoo.Game.Demo
         private const float BulletSpeed = 7.6f;
         private const float PlayerMoveSpeed = 8.2f;
         private const float PointerDragSensitivity = 1f;
+        private const float GooseMuzzleForwardRatio = 0.34f;
+        private const float GooseMuzzleSideRatio = 0.16f;
         private const float GooseScale = 0.42f;
         private const float GooseStackLift = 0.13f;
         private const float EnemyMeleeY = PlayerY + 0.42f;
@@ -943,9 +945,29 @@ namespace Tuyoo.Game.Demo
                 {
                     continue;
                 }
-                FireBullet(view.Root.transform.position + new Vector3(0f, 0.32f, 0f));
+                FireBullet(GetGooseMuzzlePosition(view));
                 view.ShootTimer = GetWeaponCooldown() + UnityEngine.Random.Range(0f, 0.08f) + (i / MaxGooseSlots) * 0.04f;
             }
+        }
+
+        private Vector3 GetGooseMuzzlePosition(GooseView view)
+        {
+            if (view == null || view.Root == null)
+            {
+                return mPlayerRoot != null ? mPlayerRoot.position + new Vector3(0f, 0.32f, 0f) : new Vector3(0f, PlayerY + 0.32f, 0f);
+            }
+
+            if (view.Renderer == null || view.Renderer.sprite == null)
+            {
+                return view.Root.transform.position + new Vector3(0f, 0.32f, 0f);
+            }
+
+            Bounds bounds = view.Renderer.bounds;
+            float sideOffset = Mathf.Clamp(mMoveDirection, -1f, 1f) * bounds.extents.x * GooseMuzzleSideRatio;
+            return new Vector3(
+                bounds.center.x + sideOffset,
+                bounds.center.y + bounds.extents.y * GooseMuzzleForwardRatio,
+                view.Root.transform.position.z);
         }
 
         private void FireBullet(Vector3 origin)
@@ -1094,7 +1116,8 @@ namespace Tuyoo.Game.Demo
                 }
                 else
                 {
-                    mTargetX = Mathf.Clamp(mTargetX + Mathf.Sign(mPlayerRoot.position.x - entity.Transform.position.x + 0.01f) * 0.65f, GetLeftBound(), GetRightBound());
+                    DamageGoose(GetAttackDamage(entity));
+                    entity.Consumed = true;
                 }
             }
         }
