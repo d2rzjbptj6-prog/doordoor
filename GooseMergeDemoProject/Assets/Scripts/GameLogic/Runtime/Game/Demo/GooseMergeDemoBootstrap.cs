@@ -218,6 +218,11 @@ namespace Tuyoo.Game.Demo
         private Text mWaveText;
         private Text mHintText;
         private Image mPlayerHealthFill;
+        private RectTransform mSafeHud;
+        private RectTransform mSafeModal;
+        private CanvasScaler mHudScaler;
+        private Rect mLastSafeArea;
+        private Vector2Int mLastScreenSize;
         private Text mPlayerHealthText;
         private GameObject mGameOverPanel;
         private Text mGameOverText;
@@ -292,6 +297,7 @@ namespace Tuyoo.Game.Demo
                 return;
             }
 
+            UpdateHudLayout();
             HandleInput();
             if (!mGameOver)
             {
@@ -732,12 +738,14 @@ namespace Tuyoo.Game.Demo
             mHudCanvas = canvasGo.AddComponent<Canvas>();
             canvasGo.AddComponent<GraphicRaycaster>();
             CanvasScaler scaler = canvasGo.AddComponent<CanvasScaler>();
+            mHudScaler = scaler;
             mHudCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
             mHudCanvas.sortingOrder = 200;
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             scaler.referenceResolution = new Vector2(720f, 1280f);
-            scaler.matchWidthOrHeight = 0.65f;
+            scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.Expand;
             EnsureEventSystem();
+            mSafeHud = CreateSafeRoot("SafeHUD", mHudCanvas.transform);
 
             mScoreText = CreateHudText("ScoreText", mHudCanvas.transform, new Vector2(30f, -28f), TextAnchor.UpperLeft, 28, new Color(0.12f, 0.18f, 0.13f));
             mCountText = CreateHudText("CountText", mHudCanvas.transform, new Vector2(-30f, -28f), TextAnchor.UpperRight, 28, new Color(0.12f, 0.18f, 0.13f));
@@ -749,6 +757,47 @@ namespace Tuyoo.Game.Demo
             mHintText.rectTransform.sizeDelta = new Vector2(660f, 100f);
             CreatePlayerHealthHud();
             CreateGameOverHud();
+            mScoreText.transform.SetParent(mSafeHud, false);
+            mCountText.transform.SetParent(mSafeHud, false);
+            mWaveText.transform.SetParent(mSafeHud, false);
+            mHintText.transform.SetParent(mSafeHud, false);
+            SetHudRect(mScoreText.rectTransform, new Vector2(0f, 1f), new Vector2(0.5f, 1f), new Vector2(24f, -56f), new Vector2(-8f, -16f));
+            SetHudRect(mCountText.rectTransform, new Vector2(0.5f, 1f), Vector2.one, new Vector2(8f, -56f), new Vector2(-24f, -16f));
+            SetHudRect(mWaveText.rectTransform, new Vector2(0f, 1f), Vector2.one, new Vector2(24f, -176f), new Vector2(-24f, -112f));
+            SetHudRect(mHintText.rectTransform, Vector2.zero, new Vector2(1f, 0f), new Vector2(24f, 16f), new Vector2(-24f, 96f));
+            UpdateHudLayout();
+        }
+
+        private RectTransform CreateSafeRoot(string name, Transform parent)
+        {
+            RectTransform root = new GameObject(name, typeof(RectTransform)).GetComponent<RectTransform>();
+            root.SetParent(parent, false);
+            return root;
+        }
+
+        private static void SetHudRect(RectTransform rect, Vector2 min, Vector2 max, Vector2 insetMin, Vector2 insetMax)
+        {
+            rect.anchorMin = min;
+            rect.anchorMax = max;
+            rect.offsetMin = insetMin;
+            rect.offsetMax = insetMax;
+        }
+
+        private void UpdateHudLayout()
+        {
+            if (mSafeHud == null || Screen.width <= 0 || Screen.height <= 0) return;
+            Rect safe = Screen.safeArea;
+            if (safe.width <= 0f || safe.height <= 0f) safe = new Rect(0f, 0f, Screen.width, Screen.height);
+            Vector2Int size = new Vector2Int(Screen.width, Screen.height);
+            if (size == mLastScreenSize && safe == mLastSafeArea) return;
+            mLastScreenSize = size;
+            mLastSafeArea = safe;
+            // Scale against the usable area, including landscape and devices with cutouts.
+            mHudScaler.referenceResolution = new Vector2(720f * Screen.width / safe.width, 720f * Screen.height / safe.height);
+            Vector2 min = new Vector2(safe.xMin / Screen.width, safe.yMin / Screen.height);
+            Vector2 max = new Vector2(safe.xMax / Screen.width, safe.yMax / Screen.height);
+            SetHudRect(mSafeHud, min, max, Vector2.zero, Vector2.zero);
+            SetHudRect(mSafeModal, min, max, Vector2.zero, Vector2.zero);
         }
 
         private void CreateGameOverHud()
@@ -764,9 +813,10 @@ namespace Tuyoo.Game.Demo
             panelRt.offsetMin = Vector2.zero;
             panelRt.offsetMax = Vector2.zero;
 
+            mSafeModal = CreateSafeRoot("SafeModal", mGameOverPanel.transform);
             GameObject card = new GameObject("CenterCard");
             card.AddComponent<RectTransform>();
-            card.transform.SetParent(mGameOverPanel.transform, false);
+            card.transform.SetParent(mSafeModal, false);
             card.AddComponent<Image>().color = new Color(0.98f, 0.95f, 0.87f, 0.95f);
             RectTransform cardRt = card.GetComponent<RectTransform>();
             cardRt.anchorMin = new Vector2(0.5f, 0.5f);
@@ -776,6 +826,8 @@ namespace Tuyoo.Game.Demo
 
             mGameOverText = CreateHudText("GameOverText", card.transform, new Vector2(0f, 48f), TextAnchor.MiddleCenter, 38, new Color(0.18f, 0.13f, 0.09f));
             mGameOverSubText = CreateHudText("GameOverSubText", card.transform, new Vector2(0f, -8f), TextAnchor.MiddleCenter, 23, new Color(0.23f, 0.19f, 0.14f));
+            SetHudRect(mGameOverText.rectTransform, new Vector2(0f, 1f), Vector2.one, new Vector2(24f, -84f), new Vector2(-24f, -20f));
+            SetHudRect(mGameOverSubText.rectTransform, new Vector2(0f, 1f), Vector2.one, new Vector2(24f, -172f), new Vector2(-24f, -92f));
             Button button = CreateButton(card.transform, "RestartButton", "继续", new Vector2(0f, -84f), new Vector2(220f, 72f), new Color(0.24f, 0.62f, 0.35f));
             button.onClick.AddListener(OnContinueButton);
             mGameOverPanel.SetActive(false);
@@ -1516,7 +1568,7 @@ namespace Tuyoo.Game.Demo
             }
 
             int amount = CalculateDamage(attack, GetGooseDefense());
-            mGooseCount -= amount;
+            mGooseCount = Mathf.Max(0, mGooseCount - amount);
             RefreshGooseFormation();
             SpawnText(mPlayerRoot.position + Vector3.up * 0.72f, "-" + amount, new Color(1f, 0.22f, 0.18f), 0.42f);
             if (mGooseCount <= 0)
@@ -1926,7 +1978,7 @@ namespace Tuyoo.Game.Demo
         private void CreatePlayerHealthHud()
         {
             GameObject panel = new GameObject("PlayerHealthPanel");
-            panel.transform.SetParent(mHudCanvas.transform, false);
+            panel.transform.SetParent(mSafeHud, false);
             RectTransform panelRt = panel.AddComponent<RectTransform>();
             panelRt.anchorMin = new Vector2(0f, 1f);
             panelRt.anchorMax = new Vector2(0f, 1f);
@@ -1941,10 +1993,10 @@ namespace Tuyoo.Game.Demo
             fillGo.transform.SetParent(panel.transform, false);
             RectTransform fillRt = fillGo.AddComponent<RectTransform>();
             fillRt.anchorMin = new Vector2(0f, 0f);
-            fillRt.anchorMax = new Vector2(0f, 1f);
+            fillRt.anchorMax = new Vector2(1f, 1f);
             fillRt.pivot = new Vector2(0f, 0.5f);
-            fillRt.anchoredPosition = new Vector2(3f, 0f);
-            fillRt.sizeDelta = new Vector2(240f, 32f);
+            fillRt.offsetMin = new Vector2(3f, 3f);
+            fillRt.offsetMax = new Vector2(-3f, -3f);
             mPlayerHealthFill = fillGo.AddComponent<Image>();
             mPlayerHealthFill.sprite = mSquareSprite;
             mPlayerHealthText = CreateHudText("PlayerHealthText", panel.transform, new Vector2(10f, -2f), TextAnchor.MiddleLeft, 19, Color.white);
@@ -1957,7 +2009,8 @@ namespace Tuyoo.Game.Demo
         private void RefreshPlayerHealthHud()
         {
             float percent = Mathf.Clamp01(mGooseCount / (float)MaxGooseCount);
-            mPlayerHealthFill.rectTransform.sizeDelta = new Vector2(240f * Mathf.Max(0.1f, percent), 32f);
+            mPlayerHealthFill.rectTransform.anchorMax = new Vector2(percent, 1f);
+            mPlayerHealthFill.rectTransform.offsetMax = new Vector2(3f - 6f * percent, -3f);
             mPlayerHealthFill.color = Color.Lerp(new Color(0.88f, 0.2f, 0.16f), new Color(0.21f, 0.72f, 0.32f), percent);
             mPlayerHealthText.text = "鹅群血量 " + mGooseCount;
         }
@@ -1990,8 +2043,11 @@ namespace Tuyoo.Game.Demo
             text.fontSize = size;
             text.alignment = anchor;
             text.color = color;
-            text.horizontalOverflow = HorizontalWrapMode.Overflow;
-            text.verticalOverflow = VerticalWrapMode.Overflow;
+            text.horizontalOverflow = HorizontalWrapMode.Wrap;
+            text.verticalOverflow = VerticalWrapMode.Truncate;
+            text.resizeTextForBestFit = true;
+            text.resizeTextMinSize = Mathf.Max(12, size - 6);
+            text.resizeTextMaxSize = size;
             text.raycastTarget = false;
             return text;
         }
