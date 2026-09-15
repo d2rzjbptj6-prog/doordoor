@@ -175,6 +175,7 @@ namespace Tuyoo.Game.Demo
         private const float BaseFallSpeed = 3.15f;
         private const float BulletSpeed = 7.6f;
         private const float PlayerMoveSpeed = 8.2f;
+        private const float PointerDragSensitivity = 1f;
         private const float GooseScale = 0.42f;
         private const float GooseStackLift = 0.13f;
         private const float EnemyMeleeY = PlayerY + 0.42f;
@@ -266,6 +267,8 @@ namespace Tuyoo.Game.Demo
         private float mScore;
         private float mTargetX;
         private float mMoveDirection;
+        private float mLastPointerScreenX;
+        private bool mPointerDragging;
         private bool mGameOver;
         private bool mVictory;
         private bool mBooted;
@@ -816,6 +819,8 @@ namespace Tuyoo.Game.Demo
             mScore = 0f;
             mTargetX = 0f;
             mMoveDirection = 0f;
+            mPointerDragging = false;
+            mLastPointerScreenX = 0f;
             mGameOver = false;
             mVictory = false;
             mPlayerRoot.position = new Vector3(0f, PlayerY, 0f);
@@ -1825,11 +1830,12 @@ namespace Tuyoo.Game.Demo
 
         private void HandleInput()
         {
-            float pointerWorldX;
-            if (TryReadPointerWorldX(out pointerWorldX))
+            float pointerWorldDeltaX;
+            if (TryReadPointerWorldDeltaX(out pointerWorldDeltaX))
             {
-                mTargetX = Mathf.Clamp(pointerWorldX, GetLeftBound(), GetRightBound());
+                mTargetX = Mathf.Clamp(mTargetX + pointerWorldDeltaX, GetLeftBound(), GetRightBound());
             }
+
             float axis = Input.GetAxisRaw("Horizontal");
             if (Mathf.Abs(axis) > 0.1f)
             {
@@ -1837,34 +1843,69 @@ namespace Tuyoo.Game.Demo
             }
         }
 
-        private bool TryReadPointerWorldX(out float worldX)
+        private bool TryReadPointerWorldDeltaX(out float worldDeltaX)
         {
-            Vector2 screen;
-            bool active = false;
+            float screenX;
+            float screenDeltaX;
             if (Input.touchCount > 0)
             {
                 Touch touch = Input.GetTouch(0);
-                active = touch.phase != TouchPhase.Ended && touch.phase != TouchPhase.Canceled;
-                screen = touch.position;
+                if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
+                {
+                    ResetPointerDrag();
+                    worldDeltaX = 0f;
+                    return false;
+                }
+
+                screenX = touch.position.x;
+                if (touch.phase == TouchPhase.Began || !mPointerDragging)
+                {
+                    mPointerDragging = true;
+                    mLastPointerScreenX = screenX;
+                    worldDeltaX = 0f;
+                    return false;
+                }
+
+                screenDeltaX = touch.deltaPosition.x;
+                mLastPointerScreenX = screenX;
             }
             else if (Input.GetMouseButton(0))
             {
-                active = true;
-                screen = Input.mousePosition;
+                screenX = Input.mousePosition.x;
+                if (Input.GetMouseButtonDown(0) || !mPointerDragging)
+                {
+                    mPointerDragging = true;
+                    mLastPointerScreenX = screenX;
+                    worldDeltaX = 0f;
+                    return false;
+                }
+
+                screenDeltaX = screenX - mLastPointerScreenX;
+                mLastPointerScreenX = screenX;
             }
             else
             {
-                worldX = 0f;
+                ResetPointerDrag();
+                worldDeltaX = 0f;
                 return false;
             }
-            if (!active)
+
+            if (Mathf.Abs(screenDeltaX) < 0.01f)
             {
-                worldX = 0f;
+                worldDeltaX = 0f;
                 return false;
             }
-            Vector3 world = mCamera.ScreenToWorldPoint(new Vector3(screen.x, screen.y, -mCamera.transform.position.z));
-            worldX = world.x;
+
+            float cameraWidth = mCamera.orthographicSize * 2f * mCamera.aspect;
+            float worldUnitsPerPixel = cameraWidth / Mathf.Max(1, Screen.width);
+            worldDeltaX = screenDeltaX * worldUnitsPerPixel * PointerDragSensitivity;
             return true;
+        }
+
+        private void ResetPointerDrag()
+        {
+            mPointerDragging = false;
+            mLastPointerScreenX = 0f;
         }
 
         private int NearestLane(float x)
