@@ -186,6 +186,10 @@ namespace Tuyoo.Game.Demo
         private const float FarLaneOffset = 0.62f;
         private const float NearLaneOffset = 1.35f;
         private const float LogicalMaxY = 14f;
+        private const float PlayerMinLogicalX = -1.5f;
+        private const float PlayerMaxLogicalX = 1.5f;
+        private const float CameraMaxWorldOffsetX = 0.5f;
+        private const float CameraFollowSpeed = 7.5f;
         // At logical Y=0, logical X +/-2 maps to Unity X +/-5, so one logical X unit is 2.5 Unity units.
         private const float LogicalToWorldNearScale = 2.5f;
         private const float LogicalToWorldFarScale = LogicalToWorldNearScale * FarLaneOffset / NearLaneOffset;
@@ -302,6 +306,7 @@ namespace Tuyoo.Game.Demo
                 UpdateEffects();
             }
 
+            UpdateCameraFollow();
             RefreshGooseFormation();
             RefreshHud();
         }
@@ -420,7 +425,7 @@ namespace Tuyoo.Game.Demo
             }
 
             float cameraHeight = mCamera.orthographicSize * 2f;
-            float cameraWidth = cameraHeight * mCamera.aspect;
+            float cameraWidth = cameraHeight * mCamera.aspect + CameraMaxWorldOffsetX * 2f;
             Vector2 spriteSize = renderer.sprite.bounds.size;
             float scale = Mathf.Max(cameraWidth / spriteSize.x, cameraHeight / spriteSize.y);
             background.transform.localScale = new Vector3(scale, scale, 1f);
@@ -814,6 +819,7 @@ namespace Tuyoo.Game.Demo
             mGameOver = false;
             mVictory = false;
             mPlayerRoot.position = new Vector3(0f, PlayerY, 0f);
+            SetCameraX(0f);
             RefreshGooseFormation();
             mGameOverPanel.SetActive(false);
         }
@@ -839,6 +845,27 @@ namespace Tuyoo.Game.Demo
             mPlayerRoot.position = new Vector3(nextX, PlayerY, 0f);
         }
 
+        private void UpdateCameraFollow()
+        {
+            if (mCamera == null || mPlayerRoot == null)
+            {
+                return;
+            }
+
+            float targetX = Mathf.Clamp(mPlayerRoot.position.x, -CameraMaxWorldOffsetX, CameraMaxWorldOffsetX);
+            float nextX = Mathf.MoveTowards(mCamera.transform.position.x, targetX, CameraFollowSpeed * Time.deltaTime);
+            SetCameraX(nextX);
+        }
+
+        private void SetCameraX(float x)
+        {
+            if (mCamera == null)
+            {
+                return;
+            }
+
+            mCamera.transform.position = new Vector3(x, CameraCenterY, -10f);
+        }
         private void UpdateScore()
         {
             mScore += Time.deltaTime * (10f + mGooseCount * 0.08f);
@@ -964,7 +991,7 @@ namespace Tuyoo.Game.Demo
                     UpdateFallingEntity(entity, playerRect);
                 }
 
-                if (entity.Consumed || entity.Transform.position.y < DespawnY)
+                if (entity.Consumed || IsEntityBelowDespawn(entity))
                 {
                     if (!mGameOver && entity.Kind == EntityKind.Chicken && !entity.Consumed)
                     {
@@ -2147,14 +2174,25 @@ namespace Tuyoo.Game.Demo
             return 0f;
         }
 
+        private bool IsEntityBelowDespawn(Entity entity)
+        {
+            if (entity.Kind == EntityKind.Effect)
+            {
+                return entity.Transform.position.y < DespawnY;
+            }
+
+            return entity.LogicalY < WorldToLogicalY(DespawnY);
+        }
+
         private float LogicalToWorldY(float logicalY)
         {
-            return Mathf.Lerp(LogicalOriginWorldY(), SpawnY, logicalY / LogicalMaxY);
+            return Mathf.LerpUnclamped(LogicalOriginWorldY(), SpawnY, logicalY / LogicalMaxY);
         }
 
         private float WorldToLogicalY(float worldY)
         {
-            return Mathf.InverseLerp(LogicalOriginWorldY(), SpawnY, worldY) * LogicalMaxY;
+            float distance = SpawnY - LogicalOriginWorldY();
+            return Mathf.Approximately(distance, 0f) ? 0f : (worldY - LogicalOriginWorldY()) / distance * LogicalMaxY;
         }
 
         private float WorldDistanceToLogicalY(float worldDistance)
@@ -2227,12 +2265,12 @@ namespace Tuyoo.Game.Demo
 
         private float GetLeftBound()
         {
-            return -1.57f;
+            return LogicalToWorldX(PlayerMinLogicalX, WorldToLogicalY(PlayerY));
         }
 
         private float GetRightBound()
         {
-            return 1.57f;
+            return LogicalToWorldX(PlayerMaxLogicalX, WorldToLogicalY(PlayerY));
         }
 
         private Sprite CreateSprite(Texture2D texture, float pixelsPerUnit)
@@ -2380,6 +2418,11 @@ namespace Tuyoo.Game.Demo
     }
 #endif
 }
+
+
+
+
+
 
 
 
