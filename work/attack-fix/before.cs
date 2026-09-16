@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using TMPro;
 using UnityEngine.Video;
 
 #if UNITY_EDITOR
@@ -210,9 +209,8 @@ namespace Tuyoo.Game.Demo
             public float AttackFireTime;
             public int AttackSegmentIndex;
             public GameObject AttackEffectRoot;
-            public Renderer AttackRenderer;
-            public float AttackSegmentStart;
-            public float AttackSourceDuration;
+            public VideoPlayer AttackVideoPlayer;
+            public bool AttackFrameReady;
         }
 
         // The first goose is the shared origin reference for logical and Unity coordinates.
@@ -260,7 +258,6 @@ namespace Tuyoo.Game.Demo
             new Vector3(-0.48f, 0.29f, 0f),
         };
 
-        private GooseAttackFrameCache mAttackFrames;
         private Camera mCamera;
         private Transform mWorldRoot;
         private Transform mBackgroundRoot;
@@ -268,8 +265,6 @@ namespace Tuyoo.Game.Demo
         private Transform mPlayerRoot;
         private Canvas mHudCanvas;
         private RectTransform mKillProgressFill;
-
-
         private int mKilledChickenCount;
         private int mTargetChickenCount;
         private RectTransform mSafeHud;
@@ -278,9 +273,8 @@ namespace Tuyoo.Game.Demo
         private Rect mLastSafeArea;
         private Vector2Int mLastScreenSize;
         private GameObject mGameOverPanel;
-        private TMP_FontAsset mHudFont;
-        private TMP_Text mGameOverText;
-        private TMP_Text mGameOverSubText;
+        private Text mGameOverText;
+        private Text mGameOverSubText;
 
         private readonly List<Entity> mEntities = new List<Entity>();
         private readonly List<GooseView> mGooseViews = new List<GooseView>();
@@ -349,14 +343,6 @@ namespace Tuyoo.Game.Demo
 
         private void OnDestroy()
         {
-            if (mAttackFrames != null) mAttackFrames.Dispose();
-            if (mHudFont != null)
-            {
-                foreach (Texture2D atlas in mHudFont.atlasTextures)
-                    if (atlas != null) Destroy(atlas);
-                Destroy(mHudFont.material);
-                Destroy(mHudFont);
-            }
             DestroyGeneratedSprite(ref mSquareSprite);
             DestroyGeneratedSprite(ref mCircleSprite);
             if (mChickenBadgeSprite != null) Destroy(mChickenBadgeSprite);
@@ -905,23 +891,6 @@ namespace Tuyoo.Game.Demo
 
         private void SetupHud()
         {
-            Font sourceFont = Resources.Load<Font>("Fonts/ZCOOLKuaiLe-Regular");
-            mHudFont = TMP_FontAsset.CreateFontAsset(sourceFont, 128, 12,
-                UnityEngine.TextCore.LowLevel.GlyphRenderMode.SDFAA, 2048, 2048,
-                AtlasPopulationMode.Dynamic, true);
-            mHudFont.name = "ZCOOL KuaiLe HUD SDF";
-            string missingCharacters;
-            if (!mHudFont.TryAddCharacters("清场胜利本关失败下一关会重置为 1 只鹅、弹弓、无元素继续有鸡越过鹅群，大鹅全部倒下", out missingCharacters))
-                Debug.LogWarning("HUD font missing characters: " + missingCharacters);
-            // Preserve curved strokes and gently widen the SDF antialiasing transition.
-            foreach (Texture2D atlas in mHudFont.atlasTextures)
-            {
-                atlas.filterMode = FilterMode.Bilinear;
-                atlas.wrapMode = TextureWrapMode.Clamp;
-            }
-            mHudFont.material.SetFloat("_Sharpness", -0.15f);
-            mHudFont.material.SetFloat("_OutlineWidth", 0f);
-            mHudFont.material.SetFloat("_OutlineSoftness", 0.015f);
             GameObject canvasGo = new GameObject("HUD");
             canvasGo.AddComponent<RectTransform>();
             mHudCanvas = canvasGo.AddComponent<Canvas>();
@@ -945,10 +914,8 @@ namespace Tuyoo.Game.Demo
             CreateProgressImage("FrameHighlight", progress, new Color(1f, 0.99f, 0.9f), new Vector2(0f, 1f), Vector2.one, new Vector2(3f, -4f), new Vector2(-3f, -2f));
             RectTransform inner = CreateProgressImage("Track", progress, new Color(0.20f, 0.28f, 0.17f), Vector2.zero, Vector2.one, new Vector2(6f, 6f), new Vector2(-6f, -6f));
             mKillProgressFill = CreateProgressImage("Fill", inner, new Color(0.38f, 0.73f, 0.27f), Vector2.zero, new Vector2(0f, 1f), Vector2.zero, Vector2.zero);
-
-            mKillProgressFill.gameObject.AddComponent<KillProgressGradient>();
-            CreateProgressImage("FillHighlight", mKillProgressFill, new Color(0.86f, 1f, 0.95f, 0.18f), new Vector2(0f, 0.82f), Vector2.one, Vector2.zero, Vector2.zero);
-            CreateProgressImage("FillShade", mKillProgressFill, new Color(0.05f, 0.24f, 0.18f, 0.18f), Vector2.zero, new Vector2(1f, 0.18f), Vector2.zero, Vector2.zero);
+            CreateProgressImage("FillHighlight", mKillProgressFill, new Color(0.77f, 0.95f, 0.49f, 0.8f), new Vector2(0f, 0.62f), Vector2.one, Vector2.zero, Vector2.zero);
+            CreateProgressImage("FillShade", mKillProgressFill, new Color(0.13f, 0.43f, 0.19f, 0.55f), Vector2.zero, new Vector2(1f, 0.18f), Vector2.zero, Vector2.zero);
             for (int i = 1; i < 10; i++)
             {
                 float x = i / 10f;
@@ -956,12 +923,12 @@ namespace Tuyoo.Game.Demo
             }
 
             // Reuse the front-facing enemy artwork as a readable chicken portrait.
-            RectTransform badge = CreateProgressImage("ChickenBadge", progress, new Color(0.24f, 0.29f, 0.16f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(-21f, -28f), new Vector2(35f, 28f));
+            RectTransform badge = CreateProgressImage("ChickenBadge", progress, new Color(0.24f, 0.29f, 0.16f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(-16f, -23f), new Vector2(30f, 23f));
             badge.GetComponent<Image>().sprite = mCircleSprite;
             RectTransform badgeFace = CreateProgressImage("BadgeFace", badge, new Color(0.98f, 0.93f, 0.72f), Vector2.zero, Vector2.one, new Vector2(3f, 3f), new Vector2(-3f, -3f));
             badgeFace.GetComponent<Image>().sprite = mCircleSprite;
             mChickenBadgeSprite = LoadArtSprite("sheet_73", new Rect(300f, 1080f, 260f, 420f), 260f);
-            RectTransform portrait = CreateProgressImage("ChickenPortrait", badgeFace, Color.white, Vector2.zero, Vector2.one, new Vector2(1f, 0f), new Vector2(-1f, 0f));
+            RectTransform portrait = CreateProgressImage("ChickenPortrait", badgeFace, Color.white, Vector2.zero, Vector2.one, new Vector2(3f, 2f), new Vector2(-3f, -2f));
             Image portraitImage = portrait.GetComponent<Image>();
             portraitImage.sprite = mChickenBadgeSprite != null ? mChickenBadgeSprite : mChickenSprite;
             portraitImage.preserveAspect = true;
@@ -1067,13 +1034,6 @@ namespace Tuyoo.Game.Demo
         private void RestartRun()
         {
             ClearEntities();
-            foreach (GooseView view in mGooseViews)
-            {
-                RemoveGooseAttackEffect(view);
-                view.AttackPlaying = false;
-                view.AttackBulletFired = false;
-                view.AttackTimer = 0f;
-            }
             mGooseCount = 1;
             mFireLevel = 0;
             mLightningLevel = 0;
@@ -1184,13 +1144,6 @@ namespace Tuyoo.Game.Demo
 
         private void UpdateGooseAttackAnimations()
         {
-            VideoClip clip = GooseAttackClipForWeapon();
-            if (clip != null && mGooseDeathChromaKeyShader != null && (mAttackFrames == null || mAttackFrames.Clip != clip))
-            {
-                foreach (GooseView goose in mGooseViews) RemoveGooseAttackEffect(goose);
-                if (mAttackFrames != null) mAttackFrames.Dispose();
-                mAttackFrames = new GooseAttackFrameCache(transform, clip, mGooseDeathChromaKeyShader);
-            }
             for (int i = 0; i < mGooseViews.Count; i++)
             {
                 GooseView view = mGooseViews[i];
@@ -1205,6 +1158,8 @@ namespace Tuyoo.Game.Demo
                     view.AttackPlaying = false;
                     view.AttackBulletFired = false;
                     view.AttackTimer = 0f;
+                    view.AttackVideoPlayer = null;
+                    view.AttackFrameReady = false;
                     if (view.Renderer != null)
                     {
                         view.Renderer.enabled = true;
@@ -1224,6 +1179,8 @@ namespace Tuyoo.Game.Demo
                     RemoveGooseAttackEffect(view);
                     view.AttackPlaying = false;
                     view.AttackTimer = 0f;
+                    view.AttackVideoPlayer = null;
+                    view.AttackFrameReady = false;
                     if (view.Renderer != null)
                     {
                         view.Renderer.enabled = true;
@@ -1263,18 +1220,50 @@ namespace Tuyoo.Game.Demo
 
             float sourceDuration = GetGooseAttackSourceDuration(clip);
             float duration = Mathf.Clamp(cooldown * 0.82f, 0.055f, Mathf.Min(sourceDuration, 0.72f));
-            view.AttackSegmentStart = GetGooseAttackSegmentStart(view, clip, sourceDuration);
-            view.AttackSourceDuration = sourceDuration;
+            float playbackSpeed = sourceDuration > 0.01f ? sourceDuration / duration : 1f;
+            float segmentStart = GetGooseAttackSegmentStart(view, clip, sourceDuration);
+            Vector3 effectScale = GetGooseAttackEffectScale(view);
+            view.AttackEffectRoot = SpawnGooseVideoEffect(
+                "GooseAttack_" + mWeapon,
+                clip,
+                view.Root.transform,
+                new Vector3(0f, 0.02f, -0.04f),
+                effectScale,
+                47,
+                true,
+                playbackSpeed,
+                duration + 0.02f,
+                segmentStart);
             if (view.AttackEffectRoot == null)
             {
-                view.AttackEffectRoot = GameObject.CreatePrimitive(PrimitiveType.Quad);
-                view.AttackEffectRoot.name = "GooseAttack";
-                view.AttackEffectRoot.transform.SetParent(view.Root.transform, false);
-                Destroy(view.AttackEffectRoot.GetComponent<Collider>());
-                view.AttackRenderer = view.AttackEffectRoot.GetComponent<Renderer>();
-                view.AttackRenderer.enabled = false;
-                view.AttackRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-                view.AttackRenderer.receiveShadows = false;
+                return false;
+            }
+
+            view.AttackVideoPlayer = view.AttackEffectRoot.GetComponent<VideoPlayer>();
+            view.AttackFrameReady = false;
+            if (view.AttackVideoPlayer != null)
+            {
+                Renderer attackRenderer = view.AttackEffectRoot.GetComponent<Renderer>();
+                if (attackRenderer != null)
+                {
+                    attackRenderer.enabled = false;
+                }
+                view.AttackVideoPlayer.frameReady += (source, frameIndex) =>
+                {
+                    if (view.AttackEffectRoot == source.gameObject && view.AttackPlaying)
+                    {
+                        view.AttackFrameReady = true;
+                        Renderer videoRenderer = source.GetComponent<Renderer>();
+                        if (videoRenderer != null)
+                        {
+                            videoRenderer.enabled = true;
+                        }
+                        if (view.Renderer != null)
+                        {
+                            view.Renderer.enabled = false;
+                        }
+                    }
+                };
             }
             view.AttackPlaying = true;
             view.AttackBulletFired = false;
@@ -1286,31 +1275,23 @@ namespace Tuyoo.Game.Demo
 
         private void RemoveGooseAttackEffect(GooseView view)
         {
-            if (view == null) return;
-            if (view.AttackRenderer != null)
+            if (view == null || view.AttackEffectRoot == null)
             {
-                view.AttackRenderer.enabled = false;
-                view.AttackRenderer.sharedMaterial = null;
+                return;
             }
-            if (view.Renderer != null) view.Renderer.enabled = true;
-        }
 
-        private void RefreshGooseAttackVisual(GooseView view)
-        {
-            if (view.AttackRenderer == null) return;
-            Material frame = !mGameOver && view.AttackPlaying && mAttackFrames != null
-                ? mAttackFrames.GetFrame(view.AttackSegmentStart + Mathf.Clamp01(view.AttackTimer / view.AttackDuration) * view.AttackSourceDuration)
-                : null;
-            view.AttackRenderer.enabled = frame != null;
-            view.Renderer.enabled = frame == null;
-            if (frame == null) return;
-            view.AttackRenderer.sharedMaterial = frame;
-            view.AttackRenderer.sortingLayerID = view.Renderer.sortingLayerID;
-            view.AttackRenderer.sortingOrder = view.Renderer.sortingOrder + 1;
-            Vector3 scale = GetGooseAttackEffectScale(view);
-            Vector3 parentScale = view.Root.transform.lossyScale;
-            view.AttackEffectRoot.transform.localPosition = new Vector3(0f, 0.02f, -0.04f);
-            view.AttackEffectRoot.transform.localScale = new Vector3(scale.x / Mathf.Max(0.001f, Mathf.Abs(parentScale.x)), scale.y / Mathf.Max(0.001f, Mathf.Abs(parentScale.y)), 1f);
+            for (int i = mEntities.Count - 1; i >= 0; i--)
+            {
+                Entity entity = mEntities[i];
+                if (entity.Kind == EntityKind.Effect && entity.Root == view.AttackEffectRoot)
+                {
+                    DestroyEntity(entity);
+                    mEntities.RemoveAt(i);
+                    break;
+                }
+            }
+
+            view.AttackEffectRoot = null;
         }
 
         private float GetGooseAttackSourceDuration(VideoClip clip)
@@ -2178,7 +2159,6 @@ namespace Tuyoo.Game.Demo
                 view.Renderer.color = CurrentGooseTint();
                 view.Renderer.sortingOrder = 20 + slotIndex * 4 + stackIndex;
                 view.Root.transform.localScale = Vector3.one * (GooseScale + Mathf.Sin(Time.time * 5f + i * 0.35f) * 0.018f);
-                RefreshGooseAttackVisual(view);
                 UpdateGooseHealthBar(view);
             }
             mTargetX = Mathf.Clamp(mTargetX, GetLeftBound(), GetRightBound());
@@ -2735,8 +2715,6 @@ namespace Tuyoo.Game.Demo
                 ? Mathf.Clamp01(mKilledChickenCount / (float)mTargetChickenCount)
                 : 0f;
             mKillProgressFill.anchorMax = new Vector2(progress, 1f);
-
-
         }
 
         private GameObject CreateSpriteObject(string name, Transform parent, Sprite sprite, Color color, Vector3 localPos, Vector3 localScale, int order)
@@ -2752,7 +2730,7 @@ namespace Tuyoo.Game.Demo
             return go;
         }
 
-        private TMP_Text CreateHudText(string name, Transform parent, Vector2 anchoredPosition, TextAnchor anchor, int size, Color color)
+        private Text CreateHudText(string name, Transform parent, Vector2 anchoredPosition, TextAnchor anchor, int size, Color color)
         {
             GameObject go = new GameObject(name);
             go.transform.SetParent(parent, false);
@@ -2762,17 +2740,16 @@ namespace Tuyoo.Game.Demo
             rt.pivot = new Vector2(0.5f, 1f);
             rt.anchoredPosition = anchoredPosition;
             rt.sizeDelta = new Vector2(660f, 80f);
-            TextMeshProUGUI text = go.AddComponent<TextMeshProUGUI>();
-            text.font = mHudFont;
+            Text text = go.AddComponent<Text>();
+            text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             text.fontSize = size;
-            text.alignment = TextAlignmentOptions.Center;
+            text.alignment = anchor;
             text.color = color;
-            text.enableWordWrapping = true;
-            text.overflowMode = TextOverflowModes.Truncate;
-            text.enableAutoSizing = true;
-            text.fontSizeMin = Mathf.Max(12, size - 6);
-            text.fontSizeMax = size;
-            text.richText = false;
+            text.horizontalOverflow = HorizontalWrapMode.Wrap;
+            text.verticalOverflow = VerticalWrapMode.Truncate;
+            text.resizeTextForBestFit = true;
+            text.resizeTextMinSize = Mathf.Max(12, size - 6);
+            text.resizeTextMaxSize = size;
             text.raycastTarget = false;
             return text;
         }
@@ -2791,7 +2768,7 @@ namespace Tuyoo.Game.Demo
             image.sprite = mSquareSprite;
             image.color = color;
             Button button = go.AddComponent<Button>();
-            TMP_Text text = CreateHudText("LabelText", go.transform, Vector2.zero, TextAnchor.MiddleCenter, 28, Color.white);
+            Text text = CreateHudText("LabelText", go.transform, Vector2.zero, TextAnchor.MiddleCenter, 28, Color.white);
             text.rectTransform.anchorMin = Vector2.zero;
             text.rectTransform.anchorMax = Vector2.one;
             text.rectTransform.offsetMin = Vector2.zero;
