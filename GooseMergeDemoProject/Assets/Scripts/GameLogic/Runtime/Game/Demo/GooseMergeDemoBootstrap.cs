@@ -181,6 +181,7 @@ namespace Tuyoo.Game.Demo
             public Vector3 BaseScale;
             public RenderTexture EffectTexture;
             public Material EffectMaterial;
+            public VideoPlayer EffectVideoPlayer;
             public int PierceLeft;
             public bool Consumed;
             public bool Unlocked;
@@ -206,6 +207,8 @@ namespace Tuyoo.Game.Demo
             public float AttackFireTime;
             public int AttackSegmentIndex;
             public GameObject AttackEffectRoot;
+            public VideoPlayer AttackVideoPlayer;
+            public bool AttackFrameReady;
         }
 
         // The first goose is the shared origin reference for logical and Unity coordinates.
@@ -219,7 +222,7 @@ namespace Tuyoo.Game.Demo
         private const float PlayerMoveSpeed = 8.2f;
         private const float PointerDragSensitivity = 1f;
         private const float GooseMuzzleForwardRatio = 0.34f;
-        private const float GooseAttackVideoScale = 1.02f;
+        private const float GooseAttackVideoScale = 0.96f;
         private const float GooseAttackFireRatio = 0.46f;
         private const float GooseScale = 0.42f;
         private const float GooseStackLift = 0.13f;
@@ -1115,10 +1118,12 @@ namespace Tuyoo.Game.Demo
 
                 if (i >= mGooseCount || view.Root == null || !view.Root.activeSelf)
                 {
+                    RemoveGooseAttackEffect(view);
                     view.AttackPlaying = false;
                     view.AttackBulletFired = false;
                     view.AttackTimer = 0f;
-                    view.AttackEffectRoot = null;
+                    view.AttackVideoPlayer = null;
+                    view.AttackFrameReady = false;
                     if (view.Renderer != null)
                     {
                         view.Renderer.enabled = true;
@@ -1135,9 +1140,11 @@ namespace Tuyoo.Game.Demo
 
                 if (view.AttackTimer >= view.AttackDuration)
                 {
+                    RemoveGooseAttackEffect(view);
                     view.AttackPlaying = false;
                     view.AttackTimer = 0f;
-                    view.AttackEffectRoot = null;
+                    view.AttackVideoPlayer = null;
+                    view.AttackFrameReady = false;
                     if (view.Renderer != null)
                     {
                         view.Renderer.enabled = true;
@@ -1196,16 +1203,59 @@ namespace Tuyoo.Game.Demo
                 return false;
             }
 
+            view.AttackVideoPlayer = view.AttackEffectRoot.GetComponent<VideoPlayer>();
+            view.AttackFrameReady = false;
+            if (view.AttackVideoPlayer != null)
+            {
+                Renderer attackRenderer = view.AttackEffectRoot.GetComponent<Renderer>();
+                if (attackRenderer != null)
+                {
+                    attackRenderer.enabled = false;
+                }
+                view.AttackVideoPlayer.frameReady += (source, frameIndex) =>
+                {
+                    if (view.AttackEffectRoot == source.gameObject && view.AttackPlaying)
+                    {
+                        view.AttackFrameReady = true;
+                        Renderer videoRenderer = source.GetComponent<Renderer>();
+                        if (videoRenderer != null)
+                        {
+                            videoRenderer.enabled = true;
+                        }
+                        if (view.Renderer != null)
+                        {
+                            view.Renderer.enabled = false;
+                        }
+                    }
+                };
+            }
             view.AttackPlaying = true;
             view.AttackBulletFired = false;
             view.AttackTimer = 0f;
             view.AttackDuration = duration;
             view.AttackFireTime = duration * GooseAttackFireRatio;
-            if (view.Renderer != null)
-            {
-                view.Renderer.enabled = false;
-            }
             return true;
+        }
+
+        private void RemoveGooseAttackEffect(GooseView view)
+        {
+            if (view == null || view.AttackEffectRoot == null)
+            {
+                return;
+            }
+
+            for (int i = mEntities.Count - 1; i >= 0; i--)
+            {
+                Entity entity = mEntities[i];
+                if (entity.Kind == EntityKind.Effect && entity.Root == view.AttackEffectRoot)
+                {
+                    DestroyEntity(entity);
+                    mEntities.RemoveAt(i);
+                    break;
+                }
+            }
+
+            view.AttackEffectRoot = null;
         }
 
         private float GetGooseAttackSourceDuration(VideoClip clip)
@@ -2324,6 +2374,7 @@ namespace Tuyoo.Game.Demo
             player.isLooping = false;
             player.playOnAwake = false;
             player.audioOutputMode = VideoAudioOutputMode.None;
+            player.sendFrameReadyEvents = true;
             player.playbackSpeed = Mathf.Max(0.01f, playbackSpeed);
             if (startTime > 0.001f)
             {
@@ -2334,7 +2385,16 @@ namespace Tuyoo.Game.Demo
             float life = lifeOverride > 0f
                 ? lifeOverride
                 : (clip.length > 0.01 ? (float)clip.length + 0.05f : 0.8f);
-            mEntities.Add(new Entity { Kind = EntityKind.Effect, Root = quad, Transform = quad.transform, Life = life, EffectTexture = texture, EffectMaterial = material });
+            mEntities.Add(new Entity
+            {
+                Kind = EntityKind.Effect,
+                Root = quad,
+                Transform = quad.transform,
+                Life = life,
+                EffectTexture = texture,
+                EffectMaterial = material,
+                EffectVideoPlayer = player
+            });
             return quad;
         }
 
