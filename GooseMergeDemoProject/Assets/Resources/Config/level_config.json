@@ -1,4307 +1,2334 @@
 {
     "levels": [
         {
-            "stageId": 20001,
-            "name": "关卡 20001",
-            "tip": "Imported from level source",
+            "stageId": 1,
+            "name": "第1关",
+            "tip": "Imported from 关卡表.xlsx",
             "events": [
                 {
                     "time": 0.0,
-                    "kind": 3,
+                    "kind": 0,
                     "lane": -1,
-                    "value": 0,
+                    "value": 2,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 2
+                    "count": 0,
+                    "y": 13.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 0,
+                    "lane": 0,
+                    "value": 2,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 0,
+                    "y": 13.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 0,
+                    "lane": 1,
+                    "value": -2,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 0,
+                    "y": 13.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 4,
+                    "lane": -1,
+                    "value": 0,
+                    "health": 2,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 17.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": -1,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 19.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 4,
+                    "lane": 0,
+                    "value": 0,
+                    "health": 5,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 19.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 0,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 21.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 4,
+                    "lane": 1,
+                    "value": 0,
+                    "health": 5,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 21.0
                 },
                 {
                     "time": 0.0,
                     "kind": 3,
                     "lane": 1,
                     "value": 0,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 2
+                    "count": 1,
+                    "y": 23.0
                 },
                 {
-                    "time": 3.0,
-                    "kind": 0,
+                    "time": 0.0,
+                    "kind": 2,
                     "lane": -1,
-                    "value": 4,
+                    "value": 0,
+                    "health": 5,
                     "element": 0,
-                    "weapon": 0,
+                    "weapon": 1,
                     "chicken": 0,
-                    "count": 0
+                    "count": 0,
+                    "y": 24.0
                 },
                 {
-                    "time": 3.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 6.0,
+                    "time": 0.0,
                     "kind": 3,
                     "lane": -1,
                     "value": 0,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 2
+                    "count": 1,
+                    "y": 26.0
                 },
                 {
-                    "time": 6.0,
+                    "time": 0.0,
+                    "kind": 4,
+                    "lane": 0,
+                    "value": 0,
+                    "health": 10,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 29.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 4,
+                    "lane": 1,
+                    "value": 0,
+                    "health": 10,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 29.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 0,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 31.0
+                },
+                {
+                    "time": 0.0,
                     "kind": 3,
                     "lane": 1,
                     "value": 0,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 2
+                    "count": 1,
+                    "y": 31.0
                 },
                 {
-                    "time": 8.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": -12,
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 0,
+                    "value": 0,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 0
+                    "count": 1,
+                    "y": 32.0
                 },
                 {
-                    "time": 8.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": 6,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 11.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 11.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 12.0,
+                    "time": 0.0,
                     "kind": 3,
                     "lane": 1,
                     "value": 0,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 3
-                },
-                {
-                    "time": 12.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 3
-                },
-                {
-                    "time": 13.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": -20,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 13.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": -20,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 16.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 3
-                },
-                {
-                    "time": 16.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 3
-                },
-                {
-                    "time": 17.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 17.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 18.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 6
-                },
-                {
-                    "time": 18.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 6
-                },
-                {
-                    "time": 24.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 5
-                },
-                {
-                    "time": 24.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 5
+                    "count": 1,
+                    "y": 32.0
                 }
             ]
         },
         {
-            "stageId": 20002,
-            "name": "关卡 20002",
-            "tip": "Imported from level source",
+            "stageId": 2,
+            "name": "第2关",
+            "tip": "Imported from 关卡表.xlsx",
             "events": [
                 {
                     "time": 0.0,
                     "kind": 0,
                     "lane": -1,
-                    "value": 6,
+                    "value": -1,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 0
+                    "count": 0,
+                    "y": 13.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 0,
+                    "lane": 0,
+                    "value": -2,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 0,
+                    "y": 13.0
                 },
                 {
                     "time": 0.0,
                     "kind": 0,
                     "lane": 1,
-                    "value": 8,
+                    "value": -5,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 0
+                    "count": 0,
+                    "y": 13.0
                 },
                 {
-                    "time": 3.0,
+                    "time": 0.0,
+                    "kind": 4,
+                    "lane": -1,
+                    "value": 0,
+                    "health": 2,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 17.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 4,
+                    "lane": 0,
+                    "value": 0,
+                    "health": 5,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 17.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 4,
+                    "lane": 1,
+                    "value": 0,
+                    "health": 5,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 17.0
+                },
+                {
+                    "time": 0.0,
                     "kind": 3,
                     "lane": -1,
                     "value": 0,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 2
+                    "count": 1,
+                    "y": 19.0
                 },
                 {
-                    "time": 3.0,
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 0,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 19.0
+                },
+                {
+                    "time": 0.0,
                     "kind": 3,
                     "lane": 1,
                     "value": 0,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 2
+                    "count": 1,
+                    "y": 19.0
                 },
                 {
-                    "time": 4.0,
+                    "time": 0.0,
                     "kind": 2,
                     "lane": -1,
                     "value": 0,
+                    "health": 5,
                     "element": 0,
                     "weapon": 1,
                     "chicken": 0,
-                    "count": 0
+                    "count": 0,
+                    "y": 21.0
                 },
                 {
-                    "time": 4.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": -25,
+                    "time": 0.0,
+                    "kind": 4,
+                    "lane": 0,
+                    "value": 0,
+                    "health": 10,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 0
+                    "count": 1,
+                    "y": 21.0
                 },
                 {
-                    "time": 8.0,
+                    "time": 0.0,
+                    "kind": 4,
+                    "lane": 1,
+                    "value": 0,
+                    "health": 10,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 21.0
+                },
+                {
+                    "time": 0.0,
                     "kind": 3,
                     "lane": -1,
                     "value": 0,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 3
+                    "count": 1,
+                    "y": 23.0
                 },
                 {
-                    "time": 8.0,
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 0,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 23.0
+                },
+                {
+                    "time": 0.0,
                     "kind": 3,
                     "lane": 1,
                     "value": 0,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 3
+                    "count": 1,
+                    "y": 23.0
                 },
                 {
-                    "time": 9.0,
+                    "time": 0.0,
+                    "kind": 0,
+                    "lane": -1,
+                    "value": -5,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 0,
+                    "y": 25.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 4,
+                    "lane": 0,
+                    "value": 0,
+                    "health": 20,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 25.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 4,
+                    "lane": 1,
+                    "value": 0,
+                    "health": 20,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 25.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": -1,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 27.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 0,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 27.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 1,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 27.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 4,
+                    "lane": -1,
+                    "value": 0,
+                    "health": 30,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 29.0
+                },
+                {
+                    "time": 0.0,
                     "kind": 2,
-                    "lane": -1,
+                    "lane": 0,
                     "value": 0,
-                    "element": 0,
-                    "weapon": 1,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 9.0,
-                    "kind": 2,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 1,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 10.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 10.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 11.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 3
-                },
-                {
-                    "time": 11.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 3
-                },
-                {
-                    "time": 12.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": -20,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 12.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": -20,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 15.0,
-                    "kind": 2,
-                    "lane": -1,
-                    "value": 0,
+                    "health": 30,
                     "element": 0,
                     "weapon": 2,
                     "chicken": 0,
-                    "count": 0
+                    "count": 0,
+                    "y": 29.0
                 },
                 {
-                    "time": 15.0,
-                    "kind": 0,
+                    "time": 0.0,
+                    "kind": 4,
                     "lane": 1,
-                    "value": -30,
+                    "value": 0,
+                    "health": 30,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 0
+                    "count": 1,
+                    "y": 29.0
                 },
                 {
-                    "time": 17.0,
+                    "time": 0.0,
                     "kind": 3,
                     "lane": -1,
                     "value": 0,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 3
+                    "count": 1,
+                    "y": 31.0
                 },
                 {
-                    "time": 17.0,
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 0,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 31.0
+                },
+                {
+                    "time": 0.0,
                     "kind": 3,
                     "lane": 1,
                     "value": 0,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 3
+                    "count": 1,
+                    "y": 31.0
                 },
                 {
-                    "time": 18.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": -8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 18.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 19.0,
+                    "time": 0.0,
                     "kind": 3,
                     "lane": -1,
                     "value": 0,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 6
+                    "count": 1,
+                    "y": 32.0
                 },
                 {
-                    "time": 19.0,
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 0,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 32.0
+                },
+                {
+                    "time": 0.0,
                     "kind": 3,
                     "lane": 1,
                     "value": 0,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 6
+                    "count": 1,
+                    "y": 32.0
                 },
                 {
-                    "time": 25.0,
+                    "time": 0.0,
                     "kind": 3,
                     "lane": -1,
                     "value": 0,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
-                    "chicken": 1,
-                    "count": 1
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 33.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 0,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 33.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 1,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 33.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": -1,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 34.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 0,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 34.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 1,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 34.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": -1,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 35.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 0,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 35.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 1,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 35.0
                 }
             ]
         },
         {
-            "stageId": 20003,
-            "name": "关卡 20003",
-            "tip": "Imported from level source",
+            "stageId": 3,
+            "name": "第3关",
+            "tip": "Imported from 关卡表.xlsx",
             "events": [
                 {
                     "time": 0.0,
                     "kind": 0,
                     "lane": -1,
-                    "value": 6,
+                    "value": -1,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 0
+                    "count": 0,
+                    "y": 13.0
                 },
                 {
                     "time": 0.0,
                     "kind": 0,
-                    "lane": 1,
-                    "value": 8,
+                    "lane": 0,
+                    "value": -2,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 0
+                    "count": 0,
+                    "y": 13.0
                 },
                 {
-                    "time": 3.0,
+                    "time": 0.0,
+                    "kind": 4,
+                    "lane": 1,
+                    "value": 0,
+                    "health": 1,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 13.0
+                },
+                {
+                    "time": 0.0,
                     "kind": 3,
                     "lane": -1,
                     "value": 0,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 2
+                    "count": 1,
+                    "y": 15.0
                 },
                 {
-                    "time": 3.0,
+                    "time": 0.0,
                     "kind": 3,
                     "lane": 1,
                     "value": 0,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 2
+                    "count": 1,
+                    "y": 15.0
                 },
                 {
-                    "time": 4.0,
-                    "kind": 2,
+                    "time": 0.0,
+                    "kind": 4,
                     "lane": -1,
                     "value": 0,
+                    "health": 3,
                     "element": 0,
-                    "weapon": 1,
+                    "weapon": 0,
                     "chicken": 0,
-                    "count": 0
+                    "count": 1,
+                    "y": 18.0
                 },
                 {
-                    "time": 4.0,
-                    "kind": 2,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 1,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 7.0,
+                    "time": 0.0,
                     "kind": 1,
-                    "lane": -1,
+                    "lane": 0,
                     "value": 0,
+                    "health": 3,
                     "element": 1,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 0
+                    "count": 0,
+                    "y": 18.0
                 },
                 {
-                    "time": 7.0,
-                    "kind": 0,
+                    "time": 0.0,
+                    "kind": 4,
                     "lane": 1,
-                    "value": -30,
+                    "value": 0,
+                    "health": 3,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 0
+                    "count": 1,
+                    "y": 18.0
                 },
                 {
-                    "time": 10.0,
+                    "time": 0.0,
                     "kind": 3,
                     "lane": -1,
                     "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 1,
-                    "count": 1
-                },
-                {
-                    "time": 11.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": 8,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 0
+                    "count": 1,
+                    "y": 21.0
                 },
                 {
-                    "time": 11.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": 8,
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 0,
+                    "value": 0,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 0
+                    "count": 1,
+                    "y": 21.0
                 },
                 {
-                    "time": 12.0,
+                    "time": 0.0,
                     "kind": 3,
                     "lane": 1,
                     "value": 0,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 3
+                    "count": 1,
+                    "y": 21.0
                 },
                 {
-                    "time": 12.0,
-                    "kind": 3,
+                    "time": 0.0,
+                    "kind": 4,
                     "lane": -1,
                     "value": 0,
+                    "health": 5,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 3
+                    "count": 1,
+                    "y": 23.0
                 },
                 {
-                    "time": 13.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": -20,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 13.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": -20,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 15.0,
+                    "time": 0.0,
                     "kind": 2,
-                    "lane": -1,
+                    "lane": 0,
                     "value": 0,
+                    "health": 3,
                     "element": 0,
-                    "weapon": 2,
+                    "weapon": 1,
                     "chicken": 0,
-                    "count": 0
+                    "count": 0,
+                    "y": 23.0
                 },
                 {
-                    "time": 15.0,
+                    "time": 0.0,
+                    "kind": 4,
+                    "lane": 1,
+                    "value": 0,
+                    "health": 5,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 23.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": -1,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 25.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 0,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 25.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 1,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 25.0
+                },
+                {
+                    "time": 0.0,
                     "kind": 0,
-                    "lane": 1,
-                    "value": -25,
+                    "lane": -1,
+                    "value": -20,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 0
+                    "count": 0,
+                    "y": 28.0
                 },
                 {
-                    "time": 16.0,
+                    "time": 0.0,
+                    "kind": 4,
+                    "lane": 0,
+                    "value": 0,
+                    "health": 10,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 28.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 4,
+                    "lane": 1,
+                    "value": 0,
+                    "health": 10,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 28.0
+                },
+                {
+                    "time": 0.0,
                     "kind": 3,
                     "lane": -1,
                     "value": 0,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 2
+                    "count": 1,
+                    "y": 31.0
                 },
                 {
-                    "time": 16.0,
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 0,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 31.0
+                },
+                {
+                    "time": 0.0,
                     "kind": 3,
                     "lane": 1,
                     "value": 0,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 2
+                    "count": 1,
+                    "y": 31.0
                 },
                 {
-                    "time": 17.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 17.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 18.0,
+                    "time": 0.0,
                     "kind": 3,
                     "lane": -1,
                     "value": 0,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
-                    "chicken": 1,
-                    "count": 1
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 32.0
                 },
                 {
-                    "time": 18.0,
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 0,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 32.0
+                },
+                {
+                    "time": 0.0,
                     "kind": 3,
                     "lane": 1,
                     "value": 0,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 3
+                    "count": 1,
+                    "y": 32.0
                 },
                 {
-                    "time": 24.0,
+                    "time": 0.0,
                     "kind": 3,
                     "lane": -1,
                     "value": 0,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
-                    "chicken": 1,
-                    "count": 1
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 33.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 0,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 33.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 1,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 33.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": -1,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 34.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 0,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 34.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 1,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 34.0
                 }
             ]
         },
         {
-            "stageId": 20004,
-            "name": "关卡 20004",
-            "tip": "Imported from level source",
+            "stageId": 4,
+            "name": "第4关",
+            "tip": "Imported from 关卡表.xlsx",
             "events": [
                 {
                     "time": 0.0,
                     "kind": 0,
                     "lane": -1,
-                    "value": 6,
+                    "value": -1,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 0
+                    "count": 0,
+                    "y": 13.0
                 },
                 {
                     "time": 0.0,
                     "kind": 0,
-                    "lane": 1,
-                    "value": 8,
+                    "lane": 0,
+                    "value": -5,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 0
+                    "count": 0,
+                    "y": 13.0
                 },
                 {
-                    "time": 3.0,
+                    "time": 0.0,
+                    "kind": 4,
+                    "lane": 1,
+                    "value": 0,
+                    "health": 1,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 13.0
+                },
+                {
+                    "time": 0.0,
                     "kind": 3,
                     "lane": -1,
                     "value": 0,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 2
+                    "count": 1,
+                    "y": 15.0
                 },
                 {
-                    "time": 3.0,
+                    "time": 0.0,
                     "kind": 3,
                     "lane": 1,
                     "value": 0,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 2
+                    "count": 1,
+                    "y": 15.0
                 },
                 {
-                    "time": 4.0,
-                    "kind": 2,
+                    "time": 0.0,
+                    "kind": 4,
                     "lane": -1,
                     "value": 0,
+                    "health": 3,
                     "element": 0,
-                    "weapon": 1,
+                    "weapon": 0,
                     "chicken": 0,
-                    "count": 0
+                    "count": 1,
+                    "y": 18.0
                 },
                 {
-                    "time": 4.0,
-                    "kind": 2,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 1,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 7.0,
+                    "time": 0.0,
                     "kind": 1,
-                    "lane": -1,
+                    "lane": 0,
                     "value": 0,
+                    "health": 3,
                     "element": 2,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 7.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": -30,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 10.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 4
-                },
-                {
-                    "time": 10.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 4
-                },
-                {
-                    "time": 11.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 11.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 12.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 4
-                },
-                {
-                    "time": 12.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 4
-                },
-                {
-                    "time": 13.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": -20,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 13.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": -20,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 15.0,
-                    "kind": 2,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 2,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 15.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": -25,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 16.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 3
-                },
-                {
-                    "time": 16.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 3
-                },
-                {
-                    "time": 17.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 17.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 18.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 8
-                },
-                {
-                    "time": 18.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 8
-                },
-                {
-                    "time": 25.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 1,
-                    "count": 1
-                }
-            ]
-        },
-        {
-            "stageId": 20005,
-            "name": "关卡 20005",
-            "tip": "Imported from level source",
-            "events": [
-                {
-                    "time": 0.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": 6,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
+                    "count": 0,
+                    "y": 18.0
                 },
                 {
                     "time": 0.0,
-                    "kind": 0,
+                    "kind": 4,
                     "lane": 1,
-                    "value": 8,
+                    "value": 0,
+                    "health": 3,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 0
+                    "count": 1,
+                    "y": 18.0
                 },
                 {
-                    "time": 3.0,
+                    "time": 0.0,
                     "kind": 3,
                     "lane": -1,
                     "value": 0,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
-                    "chicken": 2,
-                    "count": 1
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 21.0
                 },
                 {
-                    "time": 3.0,
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 0,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 21.0
+                },
+                {
+                    "time": 0.0,
                     "kind": 3,
                     "lane": 1,
                     "value": 0,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
-                    "chicken": 2,
-                    "count": 1
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 21.0
                 },
                 {
-                    "time": 4.0,
-                    "kind": 2,
+                    "time": 0.0,
+                    "kind": 4,
                     "lane": -1,
                     "value": 0,
+                    "health": 5,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 23.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 2,
+                    "lane": 0,
+                    "value": 0,
+                    "health": 3,
                     "element": 0,
                     "weapon": 1,
                     "chicken": 0,
-                    "count": 0
+                    "count": 0,
+                    "y": 23.0
                 },
                 {
-                    "time": 4.0,
-                    "kind": 2,
+                    "time": 0.0,
+                    "kind": 4,
                     "lane": 1,
                     "value": 0,
-                    "element": 0,
-                    "weapon": 1,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 5.0,
-                    "kind": 1,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 3,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 5.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": -30,
+                    "health": 5,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 0
+                    "count": 1,
+                    "y": 23.0
                 },
                 {
-                    "time": 8.0,
+                    "time": 0.0,
                     "kind": 3,
                     "lane": -1,
                     "value": 0,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
-                    "chicken": 2,
-                    "count": 1
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 25.0
                 },
                 {
-                    "time": 8.0,
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 0,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 25.0
+                },
+                {
+                    "time": 0.0,
                     "kind": 3,
                     "lane": 1,
                     "value": 0,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 2
+                    "count": 1,
+                    "y": 25.0
                 },
-                {
-                    "time": 9.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 9.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 10.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 3
-                },
-                {
-                    "time": 10.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 2,
-                    "count": 1
-                },
-                {
-                    "time": 11.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": -20,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 11.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": -20,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 13.0,
-                    "kind": 2,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 2,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 13.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": -25,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 14.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 2,
-                    "count": 1
-                },
-                {
-                    "time": 14.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 2,
-                    "count": 1
-                },
-                {
-                    "time": 15.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 15.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 16.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 2,
-                    "count": 1
-                },
-                {
-                    "time": 16.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 4
-                },
-                {
-                    "time": 19.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 4
-                },
-                {
-                    "time": 19.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 2,
-                    "count": 1
-                },
-                {
-                    "time": 22.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 2,
-                    "count": 1
-                },
-                {
-                    "time": 22.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 2,
-                    "count": 1
-                },
-                {
-                    "time": 25.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 4
-                },
-                {
-                    "time": 25.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 4
-                }
-            ]
-        },
-        {
-            "stageId": 20006,
-            "name": "关卡 20006",
-            "tip": "Imported from level source",
-            "events": [
                 {
                     "time": 0.0,
                     "kind": 0,
                     "lane": -1,
-                    "value": 6,
+                    "value": -20,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 0
+                    "count": 0,
+                    "y": 28.0
                 },
                 {
                     "time": 0.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": 8,
+                    "kind": 4,
+                    "lane": 0,
+                    "value": 0,
+                    "health": 10,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 0
+                    "count": 1,
+                    "y": 28.0
                 },
                 {
-                    "time": 3.0,
+                    "time": 0.0,
+                    "kind": 4,
+                    "lane": 1,
+                    "value": 0,
+                    "health": 10,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 28.0
+                },
+                {
+                    "time": 0.0,
                     "kind": 3,
                     "lane": -1,
                     "value": 0,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 2
+                    "count": 1,
+                    "y": 31.0
                 },
                 {
-                    "time": 3.0,
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 0,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 31.0
+                },
+                {
+                    "time": 0.0,
                     "kind": 3,
                     "lane": 1,
                     "value": 0,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 2
+                    "count": 1,
+                    "y": 31.0
                 },
                 {
-                    "time": 4.0,
+                    "time": 0.0,
+                    "kind": 4,
+                    "lane": -1,
+                    "value": 0,
+                    "health": 10,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 33.0
+                },
+                {
+                    "time": 0.0,
                     "kind": 1,
-                    "lane": -1,
+                    "lane": 0,
                     "value": 0,
+                    "health": 10,
                     "element": 1,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 4.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": -30,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 7.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 1,
-                    "count": 1
-                },
-                {
-                    "time": 8.0,
-                    "kind": 2,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 1,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 8.0,
-                    "kind": 2,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 1,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 9.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 9.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 10.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 3
-                },
-                {
-                    "time": 10.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 3
-                },
-                {
-                    "time": 11.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": -20,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 11.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": -20,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 12.0,
-                    "kind": 1,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 1,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 12.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": -30,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 15.0,
-                    "kind": 2,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 2,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 15.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": -25,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 16.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 2
-                },
-                {
-                    "time": 16.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 2
-                },
-                {
-                    "time": 17.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 17.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 18.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 1,
-                    "count": 1
-                },
-                {
-                    "time": 18.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 3
-                },
-                {
-                    "time": 24.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 1,
-                    "count": 1
-                },
-                {
-                    "time": 24.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 1,
-                    "count": 1
-                }
-            ]
-        },
-        {
-            "stageId": 20007,
-            "name": "关卡 20007",
-            "tip": "Imported from level source",
-            "events": [
-                {
-                    "time": 0.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": 6,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
+                    "count": 0,
+                    "y": 33.0
                 },
                 {
                     "time": 0.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 3.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 2
-                },
-                {
-                    "time": 3.0,
-                    "kind": 3,
+                    "kind": 4,
                     "lane": 1,
                     "value": 0,
+                    "health": 10,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 2
-                },
-                {
-                    "time": 4.0,
-                    "kind": 1,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 1,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 4.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": -30,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 7.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 4
-                },
-                {
-                    "time": 7.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 4
-                },
-                {
-                    "time": 8.0,
-                    "kind": 2,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 1,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 8.0,
-                    "kind": 2,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 1,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 9.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 9.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 10.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 3
-                },
-                {
-                    "time": 10.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 3
-                },
-                {
-                    "time": 11.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": -20,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 11.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": -20,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 12.0,
-                    "kind": 1,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 2,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 12.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": -30,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 15.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 6
-                },
-                {
-                    "time": 15.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 6
-                },
-                {
-                    "time": 16.0,
-                    "kind": 2,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 2,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 16.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": -25,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 17.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 17.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 18.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 8
-                },
-                {
-                    "time": 18.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 8
-                },
-                {
-                    "time": 25.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 1,
-                    "count": 1
-                }
-            ]
-        },
-        {
-            "stageId": 20008,
-            "name": "关卡 20008",
-            "tip": "Imported from level source",
-            "events": [
-                {
-                    "time": 0.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": 6,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
+                    "count": 1,
+                    "y": 33.0
                 },
                 {
                     "time": 0.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 3.0,
                     "kind": 3,
                     "lane": -1,
                     "value": 0,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 2
-                },
-                {
-                    "time": 3.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 2
-                },
-                {
-                    "time": 4.0,
-                    "kind": 1,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 1,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 4.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": -30,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 7.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 1,
-                    "count": 1
-                },
-                {
-                    "time": 8.0,
-                    "kind": 2,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 1,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 8.0,
-                    "kind": 2,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 1,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 9.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 9.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 10.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 3
-                },
-                {
-                    "time": 10.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 3
-                },
-                {
-                    "time": 11.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": -20,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 11.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": -20,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 12.0,
-                    "kind": 1,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 3,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 12.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": -30,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 15.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 1,
-                    "count": 1
-                },
-                {
-                    "time": 16.0,
-                    "kind": 2,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 2,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 16.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": -25,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 17.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 2,
-                    "count": 1
-                },
-                {
-                    "time": 18.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 18.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 19.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 1,
-                    "count": 1
-                },
-                {
-                    "time": 19.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 3
-                },
-                {
-                    "time": 25.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 1,
-                    "count": 1
-                },
-                {
-                    "time": 25.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 2,
-                    "count": 1
-                }
-            ]
-        },
-        {
-            "stageId": 20009,
-            "name": "关卡 20009",
-            "tip": "Imported from level source",
-            "events": [
-                {
-                    "time": 0.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": 6,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
+                    "count": 1,
+                    "y": 36.0
                 },
                 {
                     "time": 0.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 3.0,
                     "kind": 3,
-                    "lane": -1,
+                    "lane": 0,
                     "value": 0,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 2
-                },
-                {
-                    "time": 3.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 2
-                },
-                {
-                    "time": 4.0,
-                    "kind": 1,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 2,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 4.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": -30,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 7.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 4
-                },
-                {
-                    "time": 7.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 4
-                },
-                {
-                    "time": 8.0,
-                    "kind": 2,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 1,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 8.0,
-                    "kind": 2,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 1,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 9.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 9.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 10.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 3
-                },
-                {
-                    "time": 10.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 3
-                },
-                {
-                    "time": 11.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": -20,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 11.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": -20,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 12.0,
-                    "kind": 1,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 3,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 12.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": -30,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 15.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 4
-                },
-                {
-                    "time": 15.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 2,
-                    "count": 1
-                },
-                {
-                    "time": 16.0,
-                    "kind": 2,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 2,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 16.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": -25,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 17.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 2,
-                    "count": 1
-                },
-                {
-                    "time": 17.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 4
-                },
-                {
-                    "time": 18.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 18.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 19.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 6
-                },
-                {
-                    "time": 19.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 2,
-                    "count": 1
-                },
-                {
-                    "time": 25.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 2,
-                    "count": 1
-                },
-                {
-                    "time": 25.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 6
-                }
-            ]
-        },
-        {
-            "stageId": 20010,
-            "name": "关卡 20010",
-            "tip": "Imported from level source",
-            "events": [
-                {
-                    "time": 0.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": 6,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
+                    "count": 1,
+                    "y": 36.0
                 },
                 {
                     "time": 0.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 3.0,
-                    "kind": 1,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 1,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 3.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": -30,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 6.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 1,
-                    "count": 1
-                },
-                {
-                    "time": 7.0,
-                    "kind": 2,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 1,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 7.0,
-                    "kind": 2,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 1,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 8.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 8.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 9.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 3
-                },
-                {
-                    "time": 9.0,
                     "kind": 3,
                     "lane": 1,
                     "value": 0,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 3
-                },
-                {
-                    "time": 10.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": -20,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 10.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": -20,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 11.0,
-                    "kind": 1,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 1,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 11.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": -30,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 14.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 2
-                },
-                {
-                    "time": 14.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 2
-                },
-                {
-                    "time": 15.0,
-                    "kind": 1,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 2,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 15.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": -30,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 17.0,
-                    "kind": 2,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 2,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 17.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": -25,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 18.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 4
-                },
-                {
-                    "time": 18.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 4
-                },
-                {
-                    "time": 19.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 3
-                },
-                {
-                    "time": 19.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 1,
-                    "count": 1
-                },
-                {
-                    "time": 25.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 1,
-                    "count": 1
-                }
-            ]
-        },
-        {
-            "stageId": 20011,
-            "name": "关卡 20011",
-            "tip": "Imported from level source",
-            "events": [
-                {
-                    "time": 0.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": 6,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
+                    "count": 1,
+                    "y": 36.0
                 },
                 {
                     "time": 0.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 3.0,
-                    "kind": 1,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 2,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 3.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": -30,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 6.0,
                     "kind": 3,
                     "lane": -1,
                     "value": 0,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 4
-                },
-                {
-                    "time": 6.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 4
-                },
-                {
-                    "time": 7.0,
-                    "kind": 2,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 1,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 7.0,
-                    "kind": 2,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 1,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 8.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 8.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 9.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 4
-                },
-                {
-                    "time": 9.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 4
-                },
-                {
-                    "time": 10.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": -20,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 10.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": -20,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 11.0,
-                    "kind": 1,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 2,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 11.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": -30,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 14.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 3
-                },
-                {
-                    "time": 14.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 3
-                },
-                {
-                    "time": 15.0,
-                    "kind": 1,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 1,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 15.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": -30,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 17.0,
-                    "kind": 2,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 2,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 17.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": -25,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 18.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 8
-                },
-                {
-                    "time": 18.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 8
-                },
-                {
-                    "time": 24.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 1,
-                    "count": 1
-                }
-            ]
-        },
-        {
-            "stageId": 20012,
-            "name": "关卡 20012",
-            "tip": "Imported from level source",
-            "events": [
-                {
-                    "time": 0.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": 6,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
+                    "count": 1,
+                    "y": 37.0
                 },
                 {
                     "time": 0.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 3.0,
-                    "kind": 1,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 1,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 3.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": -30,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 6.0,
                     "kind": 3,
-                    "lane": -1,
+                    "lane": 0,
                     "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 1,
-                    "count": 1
-                },
-                {
-                    "time": 7.0,
-                    "kind": 2,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 1,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 7.0,
-                    "kind": 2,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 1,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 8.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": 8,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 8.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 9.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 3
-                },
-                {
-                    "time": 9.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 3
-                },
-                {
-                    "time": 10.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": -20,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 10.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": -20,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 11.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": -30,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 11.0,
-                    "kind": 1,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 2,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 13.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 2
-                },
-                {
-                    "time": 13.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 2
-                },
-                {
-                    "time": 14.0,
-                    "kind": 1,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 3,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 14.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": -30,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 16.0,
-                    "kind": 2,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 2,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 16.0,
-                    "kind": 2,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 2,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 17.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 3
-                },
-                {
-                    "time": 17.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 3
-                },
-                {
-                    "time": 18.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 18.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 19.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 8
-                },
-                {
-                    "time": 19.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 8
-                },
-                {
-                    "time": 25.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 1,
-                    "count": 1
-                },
-                {
-                    "time": 25.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 2,
-                    "count": 1
-                }
-            ]
-        },
-        {
-            "stageId": 20013,
-            "name": "关卡 20013",
-            "tip": "Imported from level source",
-            "events": [
-                {
-                    "time": 0.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": 6,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
+                    "count": 1,
+                    "y": 37.0
                 },
                 {
                     "time": 0.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 3.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 3
-                },
-                {
-                    "time": 3.0,
                     "kind": 3,
                     "lane": 1,
                     "value": 0,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 3
-                },
-                {
-                    "time": 4.0,
-                    "kind": 1,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 1,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 7.0,
-                    "kind": 2,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 1,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 7.0,
-                    "kind": 2,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 1,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 8.0,
-                    "kind": 1,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 1,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 8.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": -15,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 9.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": 10,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 9.0,
-                    "kind": 1,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 2,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 12.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 3
-                },
-                {
-                    "time": 12.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 3
-                },
-                {
-                    "time": 13.0,
-                    "kind": 2,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 2,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 14.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": -20,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 14.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": -20,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 15.0,
-                    "kind": 1,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 3,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 15.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": -15,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 16.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 4
-                },
-                {
-                    "time": 16.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 2,
-                    "count": 1
-                },
-                {
-                    "time": 17.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 17.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 18.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 6
-                },
-                {
-                    "time": 18.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 2,
-                    "count": 1
-                },
-                {
-                    "time": 21.0,
-                    "kind": 1,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 1,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 22.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 1,
-                    "count": 1
-                },
-                {
-                    "time": 22.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 2,
-                    "count": 1
-                },
-                {
-                    "time": 26.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 4
-                },
-                {
-                    "time": 26.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 2,
-                    "count": 1
-                }
-            ]
-        },
-        {
-            "stageId": 20014,
-            "name": "关卡 20014",
-            "tip": "Imported from level source",
-            "events": [
-                {
-                    "time": 0.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": 4,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 2.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 4
-                },
-                {
-                    "time": 2.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 4
-                },
-                {
-                    "time": 3.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": -15,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 3.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": -15,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 4.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 2,
-                    "count": 1
-                },
-                {
-                    "time": 4.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 3
-                },
-                {
-                    "time": 5.0,
-                    "kind": 1,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 3,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 5.0,
-                    "kind": 1,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 1,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 6.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 5
-                },
-                {
-                    "time": 6.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 5
-                },
-                {
-                    "time": 7.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": 6,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 7.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": -12,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 8.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 2,
-                    "count": 1
-                },
-                {
-                    "time": 8.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 4
-                },
-                {
-                    "time": 9.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 5
-                },
-                {
-                    "time": 9.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 5
-                },
-                {
-                    "time": 10.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": 12,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 10.0,
-                    "kind": 2,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 1,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 11.0,
-                    "kind": 1,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 2,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 11.0,
-                    "kind": 1,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 1,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 12.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 3
-                },
-                {
-                    "time": 12.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 3
-                },
-                {
-                    "time": 13.0,
-                    "kind": 2,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 2,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 13.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": 10,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 14.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": -25,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 14.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": -25,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 15.0,
-                    "kind": 1,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 3,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 15.0,
-                    "kind": 1,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 1,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 16.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 16.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": 10,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 17.0,
-                    "kind": 1,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 2,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 17.0,
-                    "kind": 1,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 3,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 18.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 6
-                },
-                {
-                    "time": 18.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 1,
-                    "count": 1
-                },
-                {
-                    "time": 22.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 6
-                },
-                {
-                    "time": 22.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 1,
-                    "count": 1
-                },
-                {
-                    "time": 26.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 1,
-                    "count": 1
-                },
-                {
-                    "time": 26.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 4
-                }
-            ]
-        },
-        {
-            "stageId": 20015,
-            "name": "关卡 20015",
-            "tip": "Imported from level source",
-            "events": [
-                {
-                    "time": 0.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": 6,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
+                    "count": 1,
+                    "y": 37.0
                 },
                 {
                     "time": 0.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 2.0,
                     "kind": 3,
                     "lane": -1,
                     "value": 0,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 2
+                    "count": 1,
+                    "y": 38.0
                 },
                 {
-                    "time": 2.0,
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 0,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 38.0
+                },
+                {
+                    "time": 0.0,
                     "kind": 3,
                     "lane": 1,
                     "value": 0,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 2
+                    "count": 1,
+                    "y": 38.0
                 },
                 {
-                    "time": 3.0,
-                    "kind": 1,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 1,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 3.0,
-                    "kind": 1,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 2,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 4.0,
-                    "kind": 2,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 1,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 4.0,
-                    "kind": 2,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 1,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 5.0,
+                    "time": 0.0,
                     "kind": 3,
                     "lane": -1,
                     "value": 0,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
-                    "chicken": 1,
-                    "count": 1
-                },
-                {
-                    "time": 6.0,
-                    "kind": 1,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 3,
-                    "weapon": 0,
                     "chicken": 0,
-                    "count": 0
+                    "count": 1,
+                    "y": 39.0
                 },
                 {
-                    "time": 6.0,
-                    "kind": 1,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 1,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 7.0,
+                    "time": 0.0,
                     "kind": 3,
-                    "lane": -1,
+                    "lane": 0,
                     "value": 0,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 3
+                    "count": 1,
+                    "y": 39.0
                 },
                 {
-                    "time": 7.0,
+                    "time": 0.0,
                     "kind": 3,
                     "lane": 1,
                     "value": 0,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 3
+                    "count": 1,
+                    "y": 39.0
                 },
                 {
-                    "time": 8.0,
-                    "kind": 2,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 2,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 8.0,
-                    "kind": 2,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 2,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 9.0,
-                    "kind": 1,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 1,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 9.0,
-                    "kind": 1,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 2,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 10.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": -25,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 10.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": -25,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 11.0,
-                    "kind": 1,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 3,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 11.0,
-                    "kind": 1,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 2,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 12.0,
-                    "kind": 0,
-                    "lane": -1,
-                    "value": 8,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 12.0,
-                    "kind": 0,
-                    "lane": 1,
-                    "value": -30,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 0,
-                    "count": 0
-                },
-                {
-                    "time": 13.0,
+                    "time": 0.0,
                     "kind": 3,
                     "lane": -1,
                     "value": 0,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 4
+                    "count": 1,
+                    "y": 40.0
                 },
                 {
-                    "time": 13.0,
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 0,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 40.0
+                },
+                {
+                    "time": 0.0,
                     "kind": 3,
                     "lane": 1,
                     "value": 0,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 4
+                    "count": 1,
+                    "y": 40.0
                 },
                 {
-                    "time": 15.0,
+                    "time": 0.0,
                     "kind": 3,
                     "lane": -1,
                     "value": 0,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 4
+                    "count": 1,
+                    "y": 41.0
                 },
                 {
-                    "time": 15.0,
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 0,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 41.0
+                },
+                {
+                    "time": 0.0,
                     "kind": 3,
                     "lane": 1,
                     "value": 0,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
-                    "chicken": 3,
-                    "count": 1
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 41.0
                 },
                 {
-                    "time": 17.0,
+                    "time": 0.0,
                     "kind": 3,
                     "lane": -1,
                     "value": 0,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 6
+                    "count": 1,
+                    "y": 42.0
                 },
                 {
-                    "time": 17.0,
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 0,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 42.0
+                },
+                {
+                    "time": 0.0,
                     "kind": 3,
                     "lane": 1,
                     "value": 0,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 6
+                    "count": 1,
+                    "y": 42.0
                 },
                 {
-                    "time": 19.0,
+                    "time": 0.0,
                     "kind": 3,
                     "lane": -1,
                     "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 2,
-                    "count": 1
-                },
-                {
-                    "time": 19.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 2,
-                    "count": 1
-                },
-                {
-                    "time": 21.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 4
+                    "count": 1,
+                    "y": 43.0
                 },
                 {
-                    "time": 21.0,
+                    "time": 0.0,
                     "kind": 3,
-                    "lane": 1,
+                    "lane": 0,
                     "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 2,
-                    "count": 1
-                },
-                {
-                    "time": 23.0,
-                    "kind": 3,
-                    "lane": -1,
-                    "value": 0,
-                    "element": 0,
-                    "weapon": 0,
-                    "chicken": 2,
-                    "count": 1
-                },
-                {
-                    "time": 23.0,
-                    "kind": 3,
-                    "lane": 1,
-                    "value": 0,
+                    "health": 0,
                     "element": 0,
                     "weapon": 0,
                     "chicken": 0,
-                    "count": 4
+                    "count": 1,
+                    "y": 43.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 1,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 43.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": -1,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 44.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 0,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 44.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 1,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 44.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": -1,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 45.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 0,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 45.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 1,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 45.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": -1,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 46.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 0,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 46.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 1,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 46.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": -1,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 47.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 0,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 47.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 1,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 47.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": -1,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 48.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 0,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 48.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 1,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 48.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": -1,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 49.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 0,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 49.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 1,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 49.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": -1,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 50.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 0,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 50.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 1,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 50.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": -1,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 51.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 0,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 51.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 1,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 51.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": -1,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 52.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 0,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 52.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 1,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 52.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": -1,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 53.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 0,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 53.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 1,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 53.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": -1,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 54.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 0,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 54.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 1,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 54.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": -1,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 55.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 0,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 55.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 1,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 55.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": -1,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 56.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 0,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 56.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 1,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 56.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": -1,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 57.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 0,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 57.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 1,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 57.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": -1,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 58.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 0,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 58.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 1,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 58.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": -1,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 59.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 0,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 59.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 1,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 59.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": -1,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 60.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 0,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 60.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 1,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 60.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": -1,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 61.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 0,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 61.0
+                },
+                {
+                    "time": 0.0,
+                    "kind": 3,
+                    "lane": 1,
+                    "value": 0,
+                    "health": 0,
+                    "element": 0,
+                    "weapon": 0,
+                    "chicken": 0,
+                    "count": 1,
+                    "y": 61.0
                 }
             ]
         }

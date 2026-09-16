@@ -22,7 +22,7 @@ namespace Tuyoo.Game.Demo
         private enum WeaponKind { Slingshot, Bow, Staff }
         private enum ChickenKind { Normal, Fat, Fast, Boss }
         private enum AttackKind { Normal, Fire, Lightning, Ice, Overload, Vaporize, FrostThunder, Laser }
-        private enum EventKind { Gate, ElementGate, WeaponRack, ChickenGroup }
+        private enum EventKind { Gate, ElementGate, WeaponRack, ChickenGroup, GooseCage }
 
         private sealed class LevelEvent
         {
@@ -30,10 +30,13 @@ namespace Tuyoo.Game.Demo
             public EventKind Kind;
             public int Lane;
             public int Value;
+            public int Health;
             public ElementKind Element;
             public WeaponKind Weapon;
             public ChickenKind Chicken;
             public int Count;
+            public float LogicalY;
+            public int GateGroup;
         }
 
         private sealed class LevelPlan
@@ -97,10 +100,12 @@ namespace Tuyoo.Game.Demo
             public int kind;
             public int lane;
             public int value;
+            public int health;
             public int element;
             public int weapon;
             public int chicken;
             public int count;
+            public float y;
         }
 
         [System.Serializable]
@@ -180,6 +185,7 @@ namespace Tuyoo.Game.Demo
             public int Health;
             public int MaxHealth;
             public int Damage;
+            public int GateGroup;
             public float Defense;
             public Vector3 BaseScale;
             public RenderTexture EffectTexture;
@@ -229,11 +235,10 @@ namespace Tuyoo.Game.Demo
         private const float GooseAttackVideoScale = 0.96f;
         private const float GooseAttackFireRatio = 0.46f;
         private const float GooseScale = 0.42f;
-        private const float GooseStackLift = 0.13f;
+        private const float GooseRingSpacing = 0.52f;
         private const float EnemyMeleeY = PlayerY + 0.42f;
         private const float EnemyMeleeCooldown = 0.5f;
-        private const int MaxGooseCount = 70;
-        private const int MaxGooseSlots = 7;
+        private const int MaxGooseCount = 40;
         private const float ApproachFarScale = 0.45f;
         private const float ApproachNearScale = 1.12f;
         private const float FarLaneOffset = 0.62f;
@@ -249,17 +254,6 @@ namespace Tuyoo.Game.Demo
         private const float LogicalToWorldFarScale = LogicalToWorldNearScale * FarLaneOffset / NearLaneOffset;
 
         private static readonly float[] LaneXs = { -1.35f, 0f, 1.35f };
-        private static readonly Vector3[] GooseOffsets =
-        {
-            new Vector3(0f, 0f, 0f),
-            new Vector3(0f, 0.58f, 0f),
-            new Vector3(0.48f, 0.29f, 0f),
-            new Vector3(0.48f, -0.29f, 0f),
-            new Vector3(0f, -0.58f, 0f),
-            new Vector3(-0.48f, -0.29f, 0f),
-            new Vector3(-0.48f, 0.29f, 0f),
-        };
-
         private GooseAttackFrameCache mAttackFrames;
         private Camera mCamera;
         private Transform mWorldRoot;
@@ -289,6 +283,7 @@ namespace Tuyoo.Game.Demo
         private readonly Dictionary<int, MonsterConfigData> mMonsters = new Dictionary<int, MonsterConfigData>();
         private readonly Dictionary<int, BuffConfig> mBuffs = new Dictionary<int, BuffConfig>();
         private readonly HashSet<int> mBuffHistory = new HashSet<int>();
+        private readonly HashSet<int> mConsumedGateGroups = new HashSet<int>();
         private readonly Dictionary<int, int> mActiveBuffByGroup = new Dictionary<int, int>();
 
         private Sprite mSquareSprite;
@@ -315,13 +310,18 @@ namespace Tuyoo.Game.Demo
         private Sprite mChickenLeftSprite;
         private Sprite mChickenRightSprite;
         private Sprite mFatChickenSprite;
+        private VideoClip mChickenWalkClip;
         private Sprite mNormalGateSprite;
         private Sprite mMultiplierGateSprite;
         private Sprite mFireGateSprite;
         private Sprite mLightningGateSprite;
         private Sprite mIceGateSprite;
+        private Sprite mGooseCageSprite;
         private Sprite mBowRackSprite;
         private Sprite mStaffRackSprite;
+        private Sprite mSlingshotProjectileSprite;
+        private Sprite mBowProjectileSprite;
+        private Sprite mStaffProjectileSprite;
 
         private int mLevelIndex;
         private int mEventIndex;
@@ -454,12 +454,17 @@ namespace Tuyoo.Game.Demo
             mFireGateSprite = LoadArtSprite("element_gate_fire", 520f) ?? LoadArtSprite("sheet_31", 310f);
             mLightningGateSprite = LoadArtSprite("element_gate_lightning", 520f) ?? LoadArtSprite("sheet_34", 310f);
             mIceGateSprite = LoadArtSprite("element_gate_ice", 520f) ?? LoadArtSprite("sheet_37", 310f);
+            mGooseCageSprite = LoadArtSprite("goose_cage", 520f) ?? LoadArtSprite("sheet_27", 360f);
             mBowRackSprite = LoadArtSprite("weapon_rack_bow", 520f) ?? LoadArtSprite("sheet_49", 330f);
             mStaffRackSprite = LoadArtSprite("weapon_rack_staff", 520f) ?? LoadArtSprite("sheet_52", 330f);
+            mSlingshotProjectileSprite = LoadArtSprite("projectile_stone", 2400f);
+            mBowProjectileSprite = LoadArtSprite("projectile_arrow", 2400f);
+            mStaffProjectileSprite = LoadArtSprite("projectile_orb", 2400f);
             mChickenSprite = LoadArtSprite("sheet_73", new Rect(50f, 480f, 620f, 1180f), 260f);
             mChickenLeftSprite = LoadArtSprite("sheet_73", new Rect(730f, 450f, 560f, 1160f), 260f);
             mChickenRightSprite = mChickenLeftSprite;
             mFatChickenSprite = mChickenSprite;
+            mChickenWalkClip = Resources.Load<VideoClip>("Art/chicken_walk_forward");
 
             if (mGooseSlingshotSprite == null)
             {
@@ -802,21 +807,41 @@ namespace Tuyoo.Game.Demo
             if (source.kind == 0)
             {
                 converted = G(source.time, source.lane, source.value);
+                converted.LogicalY = source.y;
+                converted.GateGroup = source.y > 0f ? Mathf.RoundToInt(source.y * 1000f) : 0;
                 return true;
             }
             if (source.kind == 1 && source.element >= 1 && source.element <= 3)
             {
                 converted = E(source.time, source.lane, (ElementKind)source.element);
+                converted.Health = source.health;
+                converted.LogicalY = source.y;
                 return true;
             }
             if (source.kind == 2 && source.weapon >= 1 && source.weapon <= 2)
             {
                 converted = R(source.time, source.lane, source.weapon == 1 ? WeaponKind.Bow : WeaponKind.Staff);
+                converted.Health = source.health;
+                converted.LogicalY = source.y;
                 return true;
             }
             if (source.kind == 3 && source.chicken >= 0 && source.chicken <= 3 && source.count > 0)
             {
                 converted = C(source.time, source.lane, (ChickenKind)source.chicken, source.count);
+                converted.LogicalY = source.y;
+                return true;
+            }
+            if (source.kind == 4 && source.health > 0 && source.count > 0)
+            {
+                converted = new LevelEvent
+                {
+                    Time = source.time,
+                    Kind = EventKind.GooseCage,
+                    Lane = source.lane,
+                    Health = source.health,
+                    Count = source.count,
+                    LogicalY = source.y,
+                };
                 return true;
             }
             return false;
@@ -1083,6 +1108,7 @@ namespace Tuyoo.Game.Demo
             mActiveElementBuffId = 0;
             mBuffHistory.Clear();
             mActiveBuffByGroup.Clear();
+            mConsumedGateGroups.Clear();
             GrantBuff(1, false);
             EnsureGooseView(0);
             ResetGooseHealth(mGooseViews[0]);
@@ -1368,14 +1394,45 @@ namespace Tuyoo.Game.Demo
             bullet.Range = WorldDistanceToLogicalY(worldRange);
             bullet.BreakRadius = weaponBuff != null ? weaponBuff.BreakRadius : 0.11f;
             bullet.DamageRadius = weaponBuff != null ? weaponBuff.BattleRadius : bullet.BreakRadius;
-            bullet.Body.sprite = mWeapon == WeaponKind.Bow ? mSquareSprite : mCircleSprite;
-            bullet.Body.color = GetAttackColor(attack);
-            bullet.BaseScale = mWeapon == WeaponKind.Staff ? new Vector3(0.25f, 0.25f, 1f) : new Vector3(0.13f, 0.22f, 1f);
+            bullet.Body.sprite = ProjectileSpriteForWeapon();
+            bullet.Body.color = ProjectileTintForAttack(attack);
+            bullet.BaseScale = ProjectileScaleForWeapon();
             ApplyEntityPerspective(bullet);
             bullet.Damage = GetWeaponDamage();
             bullet.Attack = attack;
             bullet.PierceLeft = mWeapon == WeaponKind.Bow ? 1 : 0;
             mEntities.Add(bullet);
+        }
+
+        private Sprite ProjectileSpriteForWeapon()
+        {
+            if (mWeapon == WeaponKind.Bow)
+            {
+                return mBowProjectileSprite ?? mSquareSprite;
+            }
+            if (mWeapon == WeaponKind.Staff)
+            {
+                return mStaffProjectileSprite ?? mCircleSprite;
+            }
+            return mSlingshotProjectileSprite ?? mCircleSprite;
+        }
+
+        private Vector3 ProjectileScaleForWeapon()
+        {
+            if (mWeapon == WeaponKind.Bow)
+            {
+                return Vector3.one * 1.45f;
+            }
+            if (mWeapon == WeaponKind.Staff)
+            {
+                return Vector3.one * 1.10f;
+            }
+            return Vector3.one * 1.15f;
+        }
+
+        private Color ProjectileTintForAttack(AttackKind attack)
+        {
+            return attack == AttackKind.Normal ? Color.white : GetAttackColor(attack);
         }
 
         private void FireLaser(Vector3 origin)
@@ -1408,21 +1465,26 @@ namespace Tuyoo.Game.Demo
         {
             if (evt.Kind == EventKind.Gate)
             {
-                SpawnGate(evt.Lane, evt.Value);
+                SpawnGate(evt.Lane, evt.Value, evt.LogicalY, evt.GateGroup);
             }
             else if (evt.Kind == EventKind.ElementGate)
             {
-                SpawnElementGate(evt.Lane, evt.Element);
+                SpawnElementGate(evt.Lane, evt.Element, evt.LogicalY, evt.Health);
             }
             else if (evt.Kind == EventKind.WeaponRack)
             {
-                SpawnWeaponRack(evt.Lane, evt.Weapon);
+                SpawnWeaponRack(evt.Lane, evt.Weapon, evt.LogicalY, evt.Health);
+            }
+            else if (evt.Kind == EventKind.GooseCage)
+            {
+                SpawnGooseCage(evt.Lane, evt.LogicalY, evt.Health, evt.Count);
             }
             else
             {
                 for (int i = 0; i < evt.Count; i++)
                 {
-                    SpawnChicken(evt.Lane, evt.Chicken, SpawnY + i * 0.32f, (i % 3 - 1) * 0.18f);
+                    float y = evt.LogicalY > 0f ? LogicalToWorldY(evt.LogicalY + i * 0.45f) : SpawnY + i * 0.32f;
+                    SpawnChicken(evt.Lane, evt.Chicken, y, (i % 3 - 1) * 0.18f);
                 }
             }
         }
@@ -1483,15 +1545,14 @@ namespace Tuyoo.Game.Demo
             }
             else if (entity.Kind == EntityKind.Gate && playerRect.Overlaps(GetEntityRect(entity)))
             {
-                ResolveGate(entity);
-                entity.Consumed = true;
+                entity.Consumed = ResolveGate(entity);
             }
             else if (entity.Kind == EntityKind.ElementGate && playerRect.Overlaps(GetEntityRect(entity)))
             {
                 if (entity.Unlocked)
                 {
                     AddElement(entity.Element);
-                    SpawnText(entity.Transform.position, ElementName(entity.Element) + "+1", GetElementColor(entity.Element), 0.42f);
+                    SpawnText(entity.Transform.position, ElementAcquireText(entity.Element), GetElementColor(entity.Element), 0.42f);
                     entity.Consumed = true;
                 }
                 else
@@ -1510,7 +1571,6 @@ namespace Tuyoo.Game.Demo
             {
                 float motionScale = PerspectiveMotionScale(chicken.LogicalY);
                 float worldStep = speed * motionScale * Time.deltaTime;
-                float previousX = current.x;
                 chicken.LogicalY -= WorldDistanceToLogicalY(worldStep);
                 // Stay in the spawn lane until entering the target acquisition zone.
                 if (chicken.LogicalY < ChickenAcquireTargetLogicalY)
@@ -1519,7 +1579,7 @@ namespace Tuyoo.Game.Demo
                     chicken.LogicalX = Mathf.MoveTowards(chicken.LogicalX, targetLogicalX, WorldDistanceToLogicalX(worldStep * 0.85f, chicken.LogicalY));
                 }
                 SyncEntityPosition(chicken);
-                UpdateChickenDirection(chicken, chicken.Transform.position.x - previousX);
+                UpdateChickenVisual(chicken);
                 return;
             }
 
@@ -1532,13 +1592,13 @@ namespace Tuyoo.Game.Demo
                 Vector3 next = Vector3.MoveTowards(current, target, speed * Time.deltaTime);
                 chicken.Transform.position = next;
                 UpdateLogicalPosition(chicken);
-                UpdateChickenDirection(chicken, next.x - current.x);
+                UpdateChickenVisual(chicken);
                 return;
             }
 
             chicken.Transform.position = new Vector3(current.x, Mathf.Min(current.y, EnemyMeleeY), current.z);
             UpdateLogicalPosition(chicken);
-            UpdateChickenDirection(chicken, target.x - current.x);
+            UpdateChickenVisual(chicken);
             chicken.MeleeTimer -= Time.deltaTime;
             if (chicken.MeleeTimer <= 0f)
             {
@@ -1680,15 +1740,7 @@ namespace Tuyoo.Game.Demo
                 UpdateWeaponRackLabel(target);
                 if (target.Health <= 0)
                 {
-                    ActorConfig actor = Actor(target.ActorId);
-                    if (actor != null)
-                    {
-                        GrantBuff(actor.BuffId, true);
-                    }
-                    else
-                    {
-                        mWeapon = target.Weapon;
-                    }
+                    GrantBuff(target.Weapon == WeaponKind.Bow ? 2 : 3, true);
                     target.Consumed = true;
                     SpawnText(target.Transform.position, WeaponName(target.Weapon), new Color(1f, 0.82f, 0.22f), 0.45f);
                 }
@@ -1726,7 +1778,6 @@ namespace Tuyoo.Game.Demo
             {
                 chicken.BurnDps = Mathf.Max(chicken.BurnDps, FireBurnRate());
                 damage = Mathf.RoundToInt(baseDamage * 0.55f);
-                SpawnText(chicken.Transform.position, "烫", new Color(1f, 0.35f, 0.08f), 0.26f + mFireLevel * 0.05f);
             }
             else if (attack == AttackKind.Lightning)
             {
@@ -1880,7 +1931,7 @@ namespace Tuyoo.Game.Demo
             int before = mGooseCount;
             AddGoose(reward);
             int added = mGooseCount - before;
-            SpawnText(cage.Transform.position, "+" + added, new Color(0.22f, 0.82f, 0.37f), 0.5f);
+            SpawnText(cage.Transform.position, "嘎嘎嘎", new Color(0.22f, 0.82f, 0.37f), 0.17f);
             mScore += added * 8f;
         }
 
@@ -1918,8 +1969,18 @@ namespace Tuyoo.Game.Demo
             SetWorldLabelText(gate, Mathf.Max(0, gate.Health).ToString());
         }
 
-        private void ResolveGate(Entity gate)
+        private bool ResolveGate(Entity gate)
         {
+            if (gate.GateGroup > 0 && mConsumedGateGroups.Contains(gate.GateGroup))
+            {
+                return false;
+            }
+
+            if (gate.GateGroup > 0)
+            {
+                mConsumedGateGroups.Add(gate.GateGroup);
+            }
+
             if (gate.Amount >= 0)
             {
                 int before = mGooseCount;
@@ -1934,6 +1995,7 @@ namespace Tuyoo.Game.Demo
                 RemoveGoose(Mathf.Min(Mathf.Max(0, -gate.Amount), Mathf.Max(0, mGooseCount - 1)));
                 SpawnText(gate.Transform.position, "-" + (before - mGooseCount), new Color(0.95f, 0.18f, 0.14f), 0.5f);
             }
+            return true;
         }
 
         private void AddGoose(int amount)
@@ -2134,6 +2196,14 @@ namespace Tuyoo.Game.Demo
             {
                 if (mKilledChickenCount >= mTargetChickenCount)
                 {
+                    for (int i = 0; i < mEntities.Count; i++)
+                    {
+                        EntityKind kind = mEntities[i].Kind;
+                        if (kind == EntityKind.Chicken || kind == EntityKind.Gate || kind == EntityKind.GooseCage || kind == EntityKind.ElementGate || kind == EntityKind.WeaponRack)
+                        {
+                            return;
+                        }
+                    }
                     RefreshHud();
                     SetGameOver(true, "下一关会重置为 1 只鹅、弹弓、无元素");
                 }
@@ -2170,19 +2240,39 @@ namespace Tuyoo.Game.Demo
                     continue;
                 }
                 EnsureGooseHealth(view);
-                int slotIndex = i % MaxGooseSlots;
-                int stackIndex = i / MaxGooseSlots;
-                view.Root.transform.localPosition = GooseOffsets[slotIndex] + new Vector3(0f, stackIndex * GooseStackLift, 0f);
+                view.Root.transform.localPosition = GetGooseFormationPosition(i);
                 view.Root.transform.localRotation = Quaternion.identity;
                 view.Renderer.sprite = CurrentGooseSprite();
                 view.Renderer.color = CurrentGooseTint();
-                view.Renderer.sortingOrder = 20 + slotIndex * 4 + stackIndex;
+                view.Renderer.sortingOrder = 20 + Mathf.Clamp(i, 0, 30);
                 view.Root.transform.localScale = Vector3.one * (GooseScale + Mathf.Sin(Time.time * 5f + i * 0.35f) * 0.018f);
                 RefreshGooseAttackVisual(view);
                 UpdateGooseHealthBar(view);
             }
             mTargetX = Mathf.Clamp(mTargetX, GetLeftBound(), GetRightBound());
             mPlayerRoot.position = new Vector3(Mathf.Clamp(mPlayerRoot.position.x, GetLeftBound(), GetRightBound()), PlayerY, 0f);
+        }
+
+        private Vector3 GetGooseFormationPosition(int index)
+        {
+            if (index <= 0)
+            {
+                return Vector3.zero;
+            }
+
+            int ring = 1;
+            int ringStart = 1;
+            while (index >= ringStart + ring * 6)
+            {
+                ringStart += ring * 6;
+                ring++;
+            }
+
+            int slot = index - ringStart;
+            int ringCount = ring * 6;
+            float angle = Mathf.PI * 0.5f + slot * Mathf.PI * 2f / ringCount;
+            float radius = ring * GooseRingSpacing;
+            return new Vector3(Mathf.Cos(angle) * radius, Mathf.Sin(angle) * radius, 0f);
         }
 
         private void EnsureGooseView(int index)
@@ -2278,12 +2368,13 @@ namespace Tuyoo.Game.Demo
             }
         }
 
-        private void SpawnGate(int lane, int value)
+        private void SpawnGate(int lane, int value, float logicalY = 0f, int gateGroup = 0)
         {
             ActorConfig actor = Actor(10);
-            Entity gate = CreateEntity(EntityKind.Gate, "Gate", lane, SpawnY, ActorMoveSpeed(10, BaseFallSpeed));
+            Entity gate = CreateEntity(EntityKind.Gate, "Gate", lane, logicalY > 0f ? LogicalToWorldY(logicalY) : SpawnY, ActorMoveSpeed(10, BaseFallSpeed));
             ApplyActorToEntity(gate, actor);
             gate.Amount = value;
+            gate.GateGroup = gateGroup;
             gate.Body.sprite = mMultiplierGateSprite != null ? mMultiplierGateSprite : (mNormalGateSprite != null ? mNormalGateSprite : mSquareSprite);
             gate.Body.color = Color.white;
             SetEntityBaseScale(gate, new Vector3(1.64f, 1.64f, 1f));
@@ -2292,52 +2383,55 @@ namespace Tuyoo.Game.Demo
             mEntities.Add(gate);
         }
 
-        private void SpawnGooseCage(int lane)
+        private void SpawnGooseCage(int lane, float logicalY = 0f, int health = 0, int rewardCount = 0)
         {
             MonsterConfigData monster = GooseCageMonster();
             int actorId = monster != null && monster.actorId > 0 ? monster.actorId : 9;
             ActorConfig actor = Actor(actorId);
-            Entity cage = CreateEntity(EntityKind.GooseCage, "GooseCage", lane, SpawnY, ActorMoveSpeed(actorId, BaseFallSpeed));
+            Entity cage = CreateEntity(EntityKind.GooseCage, "GooseCage", lane, logicalY > 0f ? LogicalToWorldY(logicalY) : SpawnY, ActorMoveSpeed(actorId, BaseFallSpeed));
             ApplyActorToEntity(cage, actor);
-            cage.Health = Mathf.Max(1, GooseCageBloodValue(monster, 1, Mathf.RoundToInt(ActorStat(actorId, "hpMax", 3f))));
+            cage.Health = Mathf.Max(1, health > 0 ? health : GooseCageBloodValue(monster, 1, Mathf.RoundToInt(ActorStat(actorId, "hpMax", 3f))));
             cage.MaxHealth = cage.Health;
-            cage.Amount = Mathf.Max(1, GooseCageBloodValue(monster, 2, monster != null && monster.count > 0 ? monster.count : 3));
-            cage.Body.sprite = mNormalGateSprite != null ? mNormalGateSprite : mSquareSprite;
-            cage.Body.color = new Color(0.82f, 0.58f, 0.32f);
-            SetEntityBaseScale(cage, new Vector3(0.62f, 0.62f, 1f));
+            cage.Amount = Mathf.Max(1, rewardCount > 0 ? rewardCount : GooseCageBloodValue(monster, 2, monster != null && monster.count > 0 ? monster.count : 3));
+            cage.Body.sprite = mGooseCageSprite != null ? mGooseCageSprite : (mNormalGateSprite != null ? mNormalGateSprite : mSquareSprite);
+            cage.Body.color = Color.white;
+            SetEntityBaseScale(cage, new Vector3(2.10f, 1.32f, 1f));
             cage.Label = CreateOutlinedWorldLabel(cage.Root.transform, cage.Health.ToString(), new Vector3(0f, 0.03f, 0f), 0.14f, Color.white, Color.black, out cage.LabelOutlines);
-            cage.RewardLabel = CreateWorldLabel(cage.Root.transform, "+" + cage.Amount, new Vector3(0f, 0.68f, 0f), 0.14f, Color.black);
+            cage.RewardLabel = CreateWorldLabel(cage.Root.transform, "+" + cage.Amount, new Vector3(0f, 0.92f, 0f), 0.14f, Color.black);
+            Vector3 labelScale = new Vector3(1.64f / 2.10f, 1.64f / 1.32f, 1f);
+            cage.Label.transform.parent.localScale = labelScale;
+            cage.RewardLabel.transform.localScale = labelScale;
             mEntities.Add(cage);
         }
 
-        private void SpawnElementGate(int lane, ElementKind element)
+        private void SpawnElementGate(int lane, ElementKind element, float logicalY = 0f, int health = 0)
         {
             int actorId = element == ElementKind.Lightning ? 12 : 11;
             ActorConfig actor = Actor(actorId);
-            Entity gate = CreateEntity(EntityKind.ElementGate, ElementName(element) + "Gate", lane, SpawnY, ActorMoveSpeed(actorId, BaseFallSpeed));
+            Entity gate = CreateEntity(EntityKind.ElementGate, ElementName(element) + "Gate", lane, logicalY > 0f ? LogicalToWorldY(logicalY) : SpawnY, ActorMoveSpeed(actorId, BaseFallSpeed));
             ApplyActorToEntity(gate, actor);
             gate.Element = element;
-            gate.Health = Mathf.RoundToInt(Mathf.Max(20f, mGooseCount * GetWeaponDamage() * 0.75f));
+            gate.Health = Mathf.Max(1, health > 0 ? health : Mathf.RoundToInt(Mathf.Max(20f, mGooseCount * GetWeaponDamage() * 0.75f)));
             gate.MaxHealth = gate.Health;
             gate.Body.sprite = ElementGateSprite(element);
             gate.Body.color = Color.white;
-            SetEntityBaseScale(gate, new Vector3(0.82f, 0.82f, 1f));
-            gate.Label = CreateOutlinedWorldLabel(gate.Root.transform, gate.Health.ToString(), new Vector3(0f, 0.03f, 0f), 0.14f, Color.white, Color.black, out gate.LabelOutlines);
+            SetEntityBaseScale(gate, new Vector3(1.64f, 1.64f, 1f));
+            gate.Label = CreateOutlinedWorldLabel(gate.Root.transform, gate.Health.ToString(), new Vector3(0f, 0.03f, 0f), 0.153f, Color.white, Color.black, out gate.LabelOutlines);
             mEntities.Add(gate);
         }
 
-        private void SpawnWeaponRack(int lane, WeaponKind weapon)
+        private void SpawnWeaponRack(int lane, WeaponKind weapon, float logicalY = 0f, int health = 0)
         {
             int actorId = weapon == WeaponKind.Staff ? 8 : 7;
             ActorConfig actor = Actor(actorId);
-            Entity rack = CreateEntity(EntityKind.WeaponRack, WeaponName(weapon) + "Rack", lane, SpawnY, ActorMoveSpeed(actorId, BaseFallSpeed));
+            Entity rack = CreateEntity(EntityKind.WeaponRack, WeaponName(weapon) + "Rack", lane, logicalY > 0f ? LogicalToWorldY(logicalY) : SpawnY, ActorMoveSpeed(actorId, BaseFallSpeed));
             ApplyActorToEntity(rack, actor);
             rack.Weapon = weapon;
-            rack.Health = Mathf.RoundToInt(Mathf.Max(1f, ActorStat(actorId, "hpMax", 1f)));
+            rack.Health = Mathf.Max(1, health > 0 ? health : Mathf.RoundToInt(Mathf.Max(1f, ActorStat(actorId, "hpMax", 1f))));
             rack.MaxHealth = rack.Health;
             rack.Body.sprite = weapon == WeaponKind.Bow ? mBowRackSprite : mStaffRackSprite;
             rack.Body.color = Color.white;
-            SetEntityBaseScale(rack, new Vector3(0.82f, 0.82f, 1f));
+            SetEntityBaseScale(rack, new Vector3(1.31f, 1.31f, 1f));
             rack.Label = CreateOutlinedWorldLabel(rack.Root.transform, rack.Health.ToString(), new Vector3(0f, 0.03f, 0f), 0.14f, Color.white, Color.black, out rack.LabelOutlines);
             mEntities.Add(rack);
         }
@@ -2357,7 +2451,8 @@ namespace Tuyoo.Game.Demo
             chicken.Body.color = Color.white;
             chicken.Transform.localRotation = Quaternion.identity;
             chicken.BaseScale = ChickenScale(kind);
-            UpdateChickenDirection(chicken, Mathf.Sign(mPlayerRoot.position.x - chicken.Transform.position.x));
+            SetupChickenWalkVideo(chicken);
+            UpdateChickenVisual(chicken);
             CreateEnemyHealthBar(chicken, new Color(0.9f, 0.18f, 0.16f));
             mEntities.Add(chicken);
         }
@@ -2409,7 +2504,7 @@ namespace Tuyoo.Game.Demo
         {
             gate.Body.color = Color.Lerp(Color.white, GetElementColor(gate.Element), 0.25f);
             SetWorldLabelText(gate, "");
-            SpawnText(gate.Transform.position, "锁碎", GetElementColor(gate.Element), 0.42f);
+            SpawnText(gate.Transform.position, ElementGateBreakText(gate.Element), GetElementColor(gate.Element), 0.42f);
         }
 
         private Vector3 GetGooseDeathEffectPosition(GooseView view)
@@ -2550,15 +2645,15 @@ namespace Tuyoo.Game.Demo
 
         private void SpawnDeathEffect(Entity chicken, AttackKind attack)
         {
-            string label = "倒";
-            Color color = new Color(0.95f, 0.78f, 0.24f);
-            if (attack == AttackKind.Fire) { label = "烤鸡"; color = new Color(1f, 0.55f, 0.12f); }
-            else if (attack == AttackKind.Lightning) { label = "骨架"; color = new Color(0.18f, 0.18f, 0.2f); }
+            string label = "鸽鸽";
+            Color color = new Color(1f, 0.86f, 0.08f);
+            if (attack == AttackKind.Fire) { label = "rap"; color = new Color(0.62f, 0.22f, 0.9f); }
+            else if (attack == AttackKind.Lightning) { label = "篮球"; color = new Color(0.55f, 0.32f, 0.12f); }
             else if (attack == AttackKind.Ice) { label = "冻鸡"; color = new Color(0.55f, 0.9f, 1f); }
             else if (attack == AttackKind.Overload) { label = "鸡块"; color = new Color(1f, 0.35f, 0.05f); }
             else if (attack == AttackKind.Vaporize) { label = "热汽"; color = new Color(0.9f, 0.95f, 1f); }
             else if (attack == AttackKind.FrostThunder) { label = "冰裂"; color = new Color(0.58f, 0.88f, 1f); }
-            else if (attack == AttackKind.Laser) { label = "贯穿"; color = new Color(0.68f, 0.95f, 1f); }
+            else if (attack == AttackKind.Laser) { label = "练习生"; color = new Color(0.68f, 0.95f, 1f); }
             SpawnText(chicken.Transform.position, label, color, 0.36f);
             GameObject corpse = CreateSpriteObject("Corpse_" + label, mEntityRoot, mCircleSprite, color, chicken.Transform.position + Vector3.down * 0.05f, new Vector3(0.58f, 0.24f, 1f), 6);
             mEntities.Add(new Entity { Kind = EntityKind.Effect, Root = corpse, Transform = corpse.transform, Body = corpse.GetComponent<SpriteRenderer>(), Life = 0.65f });
@@ -2603,8 +2698,26 @@ namespace Tuyoo.Game.Demo
 
         private Rect GetPlayerRect()
         {
-            float height = 1.55f + Mathf.Max(0, Mathf.CeilToInt(mGooseCount / (float)MaxGooseSlots) - 1) * GooseStackLift;
-            return new Rect(mPlayerRoot.position.x - 1.0f, PlayerY - 0.12f, 2.0f, height);
+            float radius = GetGooseFormationRadius(mGooseCount) + 0.62f;
+            return new Rect(mPlayerRoot.position.x - radius, PlayerY - radius, radius * 2f, radius * 2f);
+        }
+
+        private float GetGooseFormationRadius(int count)
+        {
+            if (count <= 1)
+            {
+                return 0f;
+            }
+
+            int ring = 1;
+            int ringStart = 1;
+            int lastIndex = Mathf.Max(0, count - 1);
+            while (lastIndex >= ringStart + ring * 6)
+            {
+                ringStart += ring * 6;
+                ring++;
+            }
+            return ring * GooseRingSpacing;
         }
 
         private bool PlayerOverlapsEntityRadius(Entity entity, Rect playerRect)
@@ -2890,8 +3003,7 @@ namespace Tuyoo.Game.Demo
 
         private AttackKind ChooseAttack()
         {
-            if (mFireLevel > 0 && mLightningLevel > 0 && mIceLevel > 0) return AttackKind.Laser;
-            if (mFireLevel > 0 && mLightningLevel > 0) return AttackKind.Overload;
+            if (mFireLevel > 0 && mLightningLevel > 0) return AttackKind.Laser;
             if (mFireLevel > 0 && mIceLevel > 0) return AttackKind.Vaporize;
             if (mLightningLevel > 0 && mIceLevel > 0) return AttackKind.FrostThunder;
             if (mFireLevel > 0) return AttackKind.Fire;
@@ -2935,25 +3047,71 @@ namespace Tuyoo.Game.Demo
             return new Vector3(0.55f, 0.55f, 1f);
         }
 
-        private void UpdateChickenDirection(Entity chicken, float moveX)
+        private void SetupChickenWalkVideo(Entity chicken)
+        {
+            if (chicken == null || chicken.Root == null || mChickenWalkClip == null || mGooseDeathChromaKeyShader == null)
+            {
+                return;
+            }
+
+            RenderTexture texture = new RenderTexture(360, 640, 0, RenderTextureFormat.ARGB32);
+            texture.Create();
+
+            GameObject quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
+            quad.name = "ChickenWalkVideo";
+            quad.transform.SetParent(chicken.Root.transform, false);
+            quad.transform.localPosition = Vector3.zero;
+            Collider collider = quad.GetComponent<Collider>();
+            if (collider != null)
+            {
+                Destroy(collider);
+            }
+
+            Renderer renderer = quad.GetComponent<Renderer>();
+            Material material = new Material(mGooseDeathChromaKeyShader);
+            material.mainTexture = texture;
+            material.SetColor("_KeyColor", Color.green);
+            material.SetFloat("_Threshold", 0.035f);
+            material.SetFloat("_Feather", 0.16f);
+            renderer.material = material;
+
+            VideoPlayer player = quad.AddComponent<VideoPlayer>();
+            player.clip = mChickenWalkClip;
+            player.renderMode = VideoRenderMode.RenderTexture;
+            player.targetTexture = texture;
+            player.isLooping = true;
+            player.playOnAwake = false;
+            player.audioOutputMode = VideoAudioOutputMode.None;
+            player.Play();
+
+            chicken.EffectTexture = texture;
+            chicken.EffectMaterial = material;
+            chicken.EffectVideoPlayer = player;
+        }
+
+        private void UpdateChickenVisual(Entity chicken)
         {
             Vector3 scale = GetEntityPerspectiveScale(chicken);
-            chicken.Body.sortingOrder = EntityPerspectiveSortingOrder(chicken.LogicalY);
-            if (moveX < -0.01f)
+            int sortingOrder = EntityPerspectiveSortingOrder(chicken.LogicalY);
+            chicken.Body.sprite = mChickenSprite ?? mChickenLeftSprite;
+            chicken.Body.sortingOrder = sortingOrder;
+
+            if (chicken.EffectVideoPlayer != null)
             {
-                chicken.Body.sprite = mChickenLeftSprite ?? mChickenSprite;
-                chicken.Body.transform.localScale = new Vector3(Mathf.Abs(scale.x), scale.y, scale.z);
+                chicken.Body.color = new Color(1f, 1f, 1f, 0f);
+                Transform video = chicken.EffectVideoPlayer.transform;
+                video.localPosition = Vector3.zero;
+                video.localScale = new Vector3(scale.y * 1.755f, scale.y * 3.12f, 1f);
+                Renderer renderer = video.GetComponent<Renderer>();
+                if (renderer != null)
+                {
+                    renderer.sortingOrder = sortingOrder;
+                }
+                return;
             }
-            else if (moveX > 0.01f)
-            {
-                chicken.Body.sprite = mChickenRightSprite ?? mChickenLeftSprite ?? mChickenSprite;
-                chicken.Body.transform.localScale = new Vector3(-Mathf.Abs(scale.x), scale.y, scale.z);
-            }
-            else
-            {
-                chicken.Body.sprite = mChickenSprite ?? mChickenLeftSprite;
-                chicken.Body.transform.localScale = scale;
-            }
+
+            chicken.Body.color = Color.white;
+            chicken.Body.transform.localScale = scale;
         }
 
         private void SetEntityBaseScale(Entity entity, Vector3 baseScale)
@@ -3120,6 +3278,20 @@ namespace Tuyoo.Game.Demo
             if (element == ElementKind.Lightning) return "雷";
             if (element == ElementKind.Ice) return "冰";
             return "";
+        }
+
+        private string ElementGateBreakText(ElementKind element)
+        {
+            if (element == ElementKind.Fire) return "鸡你太美";
+            if (element == ElementKind.Lightning) return "铁山靠";
+            return "锁碎";
+        }
+
+        private string ElementAcquireText(ElementKind element)
+        {
+            if (element == ElementKind.Fire) return "鸡神之力";
+            if (element == ElementKind.Lightning) return "坤神之力";
+            return ElementName(element) + "+1";
         }
 
         private string WeaponName(WeaponKind weapon)
