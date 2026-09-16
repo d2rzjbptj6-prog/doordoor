@@ -157,6 +157,8 @@ namespace Tuyoo.Game.Demo
             public Transform Transform;
             public SpriteRenderer Body;
             public TextMesh Label;
+            public TextMesh[] LabelOutlines;
+            public TextMesh RewardLabel;
             public SpriteRenderer HealthBack;
             public SpriteRenderer HealthFill;
             public float Speed;
@@ -308,6 +310,7 @@ namespace Tuyoo.Game.Demo
         private Sprite mChickenRightSprite;
         private Sprite mFatChickenSprite;
         private Sprite mNormalGateSprite;
+        private Sprite mMultiplierGateSprite;
         private Sprite mFireGateSprite;
         private Sprite mLightningGateSprite;
         private Sprite mIceGateSprite;
@@ -432,11 +435,12 @@ namespace Tuyoo.Game.Demo
             mGooseStaffAttackClip = Resources.Load<VideoClip>("Art/goose_attack_staff");
             mGooseDeathChromaKeyShader = Resources.Load<Shader>("Shaders/GooseDeathChromaKey") ?? Shader.Find("Tuyoo/GooseDeathChromaKey");
             mNormalGateSprite = LoadArtSprite("sheet_25", 290f);
-            mFireGateSprite = LoadArtSprite("sheet_31", 310f);
-            mLightningGateSprite = LoadArtSprite("sheet_34", 310f);
-            mIceGateSprite = LoadArtSprite("sheet_37", 310f);
-            mBowRackSprite = LoadArtSprite("sheet_49", 330f);
-            mStaffRackSprite = LoadArtSprite("sheet_52", 330f);
+            mMultiplierGateSprite = LoadArtSprite("multiplier_gate", 520f) ?? mNormalGateSprite;
+            mFireGateSprite = LoadArtSprite("element_gate_fire", 520f) ?? LoadArtSprite("sheet_31", 310f);
+            mLightningGateSprite = LoadArtSprite("element_gate_lightning", 520f) ?? LoadArtSprite("sheet_34", 310f);
+            mIceGateSprite = LoadArtSprite("element_gate_ice", 520f) ?? LoadArtSprite("sheet_37", 310f);
+            mBowRackSprite = LoadArtSprite("weapon_rack_bow", 520f) ?? LoadArtSprite("sheet_49", 330f);
+            mStaffRackSprite = LoadArtSprite("weapon_rack_staff", 520f) ?? LoadArtSprite("sheet_52", 330f);
             mChickenSprite = LoadArtSprite("sheet_73", new Rect(50f, 480f, 620f, 1180f), 260f);
             mChickenLeftSprite = LoadArtSprite("sheet_73", new Rect(730f, 450f, 560f, 1160f), 260f);
             mChickenRightSprite = mChickenLeftSprite;
@@ -1102,7 +1106,7 @@ namespace Tuyoo.Game.Demo
                 {
                     FireBullet(GetGooseMuzzlePosition(view));
                 }
-                view.ShootTimer = cooldown + UnityEngine.Random.Range(0f, 0.08f) + (i / MaxGooseSlots) * 0.04f;
+                view.ShootTimer = cooldown;
             }
         }
 
@@ -1424,8 +1428,7 @@ namespace Tuyoo.Game.Demo
 
             if (entity.Kind == EntityKind.GooseCage && PlayerOverlapsEntityRadius(entity, playerRect))
             {
-                DamageGoose(GetAttackDamage(entity));
-                entity.Consumed = true;
+                ResolveGooseCageReward(entity);
             }
             else if (entity.Kind == EntityKind.Gate && playerRect.Overlaps(GetEntityRect(entity)))
             {
@@ -1602,7 +1605,7 @@ namespace Tuyoo.Game.Demo
             else if (target.Kind == EntityKind.Gate)
             {
                 int delta = Mathf.Max(1, bullet.Damage / 10);
-                target.Amount = target.Amount >= 0 ? target.Amount + delta : Mathf.Min(-1, target.Amount + delta);
+                target.Amount += delta;
                 UpdateGateVisual(target, true);
                 mScore += 2f;
             }
@@ -1611,7 +1614,7 @@ namespace Tuyoo.Game.Demo
                 if (!target.Unlocked)
                 {
                     target.Health -= bullet.Damage;
-                    UpdateEnemyHealth(target);
+                    UpdateElementGateLockLabel(target);
                     if (target.Health <= 0)
                     {
                         target.Unlocked = true;
@@ -1623,7 +1626,7 @@ namespace Tuyoo.Game.Demo
             else if (target.Kind == EntityKind.WeaponRack)
             {
                 target.Health -= bullet.Damage;
-                UpdateEnemyHealth(target);
+                UpdateWeaponRackLabel(target);
                 if (target.Health <= 0)
                 {
                     ActorConfig actor = Actor(target.ActorId);
@@ -1806,16 +1809,61 @@ namespace Tuyoo.Game.Demo
             }
 
             cage.Health -= CalculateDamage(damage, cage.Defense);
-            UpdateEnemyHealth(cage);
+            UpdateGooseCageLabels(cage);
             if (cage.Health <= 0)
             {
-                cage.Consumed = true;
-                int before = mGooseCount;
-                AddGoose(cage.Amount);
-                int added = mGooseCount - before;
-                SpawnText(cage.Transform.position, "+" + added, new Color(0.22f, 0.82f, 0.37f), 0.5f);
-                mScore += added * 8f;
+                ResolveGooseCageReward(cage);
             }
+        }
+
+        private void ResolveGooseCageReward(Entity cage)
+        {
+            if (cage == null || cage.Consumed)
+            {
+                return;
+            }
+
+            cage.Consumed = true;
+            int reward = Mathf.Max(1, cage.Amount);
+            int before = mGooseCount;
+            AddGoose(reward);
+            int added = mGooseCount - before;
+            SpawnText(cage.Transform.position, "+" + added, new Color(0.22f, 0.82f, 0.37f), 0.5f);
+            mScore += added * 8f;
+        }
+
+        private void UpdateGooseCageLabels(Entity cage)
+        {
+            if (cage == null)
+            {
+                return;
+            }
+
+            SetWorldLabelText(cage, Mathf.Max(0, cage.Health).ToString());
+            if (cage.RewardLabel != null)
+            {
+                cage.RewardLabel.text = "+" + Mathf.Max(1, cage.Amount);
+            }
+        }
+
+        private void UpdateWeaponRackLabel(Entity rack)
+        {
+            if (rack == null)
+            {
+                return;
+            }
+
+            SetWorldLabelText(rack, Mathf.Max(0, rack.Health).ToString());
+        }
+
+        private void UpdateElementGateLockLabel(Entity gate)
+        {
+            if (gate == null)
+            {
+                return;
+            }
+
+            SetWorldLabelText(gate, Mathf.Max(0, gate.Health).ToString());
         }
 
         private void ResolveGate(Entity gate)
@@ -1844,8 +1892,21 @@ namespace Tuyoo.Game.Demo
             {
                 EnsureGooseView(i);
                 ResetGooseHealth(mGooseViews[i]);
+                SyncGooseShootTimerToLeader(mGooseViews[i]);
             }
             RefreshGooseFormation();
+        }
+
+        private void SyncGooseShootTimerToLeader(GooseView view)
+        {
+            if (view == null || mGooseViews.Count == 0 || mGooseViews[0] == null || view == mGooseViews[0])
+            {
+                return;
+            }
+
+            GooseView leader = mGooseViews[0];
+            view.ShootTimer = leader.ShootTimer;
+            view.AttackSegmentIndex = leader.AttackSegmentIndex;
         }
 
         private void RemoveGoose(int amount)
@@ -2072,7 +2133,7 @@ namespace Tuyoo.Game.Demo
             go.transform.SetParent(mPlayerRoot, false);
             SpriteRenderer renderer = go.AddComponent<SpriteRenderer>();
             renderer.sprite = CurrentGooseSprite();
-            GooseView view = new GooseView { Root = go, Renderer = renderer, ShootTimer = UnityEngine.Random.Range(0.03f, 0.28f) };
+            GooseView view = new GooseView { Root = go, Renderer = renderer, ShootTimer = index == 0 || mGooseViews.Count == 0 ? UnityEngine.Random.Range(0.03f, 0.28f) : mGooseViews[0].ShootTimer };
             ResetGooseHealth(view);
             CreateGooseHealthBar(view);
             return view;
@@ -2153,20 +2214,14 @@ namespace Tuyoo.Game.Demo
 
         private void SpawnGate(int lane, int value)
         {
-            if (value >= 0)
-            {
-                SpawnGooseCage(lane);
-                return;
-            }
-
             ActorConfig actor = Actor(10);
             Entity gate = CreateEntity(EntityKind.Gate, "Gate", lane, SpawnY, ActorMoveSpeed(10, BaseFallSpeed));
             ApplyActorToEntity(gate, actor);
             gate.Amount = value;
-            gate.Body.sprite = mNormalGateSprite != null ? mNormalGateSprite : mSquareSprite;
-            gate.Body.color = value < 0 ? new Color(1f, 0.32f, 0.26f) : Color.white;
-            SetEntityBaseScale(gate, new Vector3(0.68f, 0.68f, 1f));
-            gate.Label = CreateWorldLabel(gate.Root.transform, "", new Vector3(0f, 0.38f, 0f), 0.16f, value < 0 ? new Color(0.9f, 0.05f, 0.03f) : new Color(0.1f, 0.28f, 0.12f));
+            gate.Body.sprite = mMultiplierGateSprite != null ? mMultiplierGateSprite : (mNormalGateSprite != null ? mNormalGateSprite : mSquareSprite);
+            gate.Body.color = Color.white;
+            SetEntityBaseScale(gate, new Vector3(1.64f, 1.64f, 1f));
+            gate.Label = CreateOutlinedWorldLabel(gate.Root.transform, "", new Vector3(0f, 0.03f, 0f), 0.153f, Color.white, Color.black, out gate.LabelOutlines);
             UpdateGateVisual(gate, false);
             mEntities.Add(gate);
         }
@@ -2184,8 +2239,8 @@ namespace Tuyoo.Game.Demo
             cage.Body.sprite = mNormalGateSprite != null ? mNormalGateSprite : mSquareSprite;
             cage.Body.color = new Color(0.82f, 0.58f, 0.32f);
             SetEntityBaseScale(cage, new Vector3(0.62f, 0.62f, 1f));
-            cage.Label = CreateWorldLabel(cage.Root.transform, "x" + cage.Amount, new Vector3(0f, 0.46f, 0f), 0.15f, new Color(0.18f, 0.1f, 0.03f));
-            CreateEnemyHealthBar(cage, new Color(0.95f, 0.63f, 0.2f));
+            cage.Label = CreateOutlinedWorldLabel(cage.Root.transform, cage.Health.ToString(), new Vector3(0f, 0.03f, 0f), 0.14f, Color.white, Color.black, out cage.LabelOutlines);
+            cage.RewardLabel = CreateWorldLabel(cage.Root.transform, "+" + cage.Amount, new Vector3(0f, 0.68f, 0f), 0.14f, Color.black);
             mEntities.Add(cage);
         }
 
@@ -2200,9 +2255,8 @@ namespace Tuyoo.Game.Demo
             gate.MaxHealth = gate.Health;
             gate.Body.sprite = ElementGateSprite(element);
             gate.Body.color = Color.white;
-            SetEntityBaseScale(gate, new Vector3(0.62f, 0.62f, 1f));
-            gate.Label = CreateWorldLabel(gate.Root.transform, "锁", new Vector3(0f, 0.5f, 0f), 0.14f, GetElementColor(element));
-            CreateEnemyHealthBar(gate, GetElementColor(element));
+            SetEntityBaseScale(gate, new Vector3(0.82f, 0.82f, 1f));
+            gate.Label = CreateOutlinedWorldLabel(gate.Root.transform, gate.Health.ToString(), new Vector3(0f, 0.03f, 0f), 0.14f, Color.white, Color.black, out gate.LabelOutlines);
             mEntities.Add(gate);
         }
 
@@ -2217,9 +2271,8 @@ namespace Tuyoo.Game.Demo
             rack.MaxHealth = rack.Health;
             rack.Body.sprite = weapon == WeaponKind.Bow ? mBowRackSprite : mStaffRackSprite;
             rack.Body.color = Color.white;
-            SetEntityBaseScale(rack, new Vector3(0.58f, 0.58f, 1f));
-            rack.Label = CreateWorldLabel(rack.Root.transform, WeaponName(weapon), new Vector3(0f, 0.62f, 0f), 0.12f, new Color(0.25f, 0.15f, 0.04f));
-            CreateEnemyHealthBar(rack, new Color(0.94f, 0.65f, 0.18f));
+            SetEntityBaseScale(rack, new Vector3(0.82f, 0.82f, 1f));
+            rack.Label = CreateOutlinedWorldLabel(rack.Root.transform, rack.Health.ToString(), new Vector3(0f, 0.03f, 0f), 0.14f, Color.white, Color.black, out rack.LabelOutlines);
             mEntities.Add(rack);
         }
 
@@ -2272,8 +2325,18 @@ namespace Tuyoo.Game.Demo
 
         private void UpdateGateVisual(Entity gate, bool pop)
         {
-            gate.Label.text = gate.Amount >= 0 ? "+" + gate.Amount : gate.Amount.ToString();
+            SetWorldLabelText(gate, gate.Amount >= 0 ? "+" + gate.Amount : gate.Amount.ToString());
             gate.Label.transform.localScale = Vector3.one * (pop ? 1.2f : 1f);
+            if (gate.LabelOutlines != null)
+            {
+                for (int i = 0; i < gate.LabelOutlines.Length; i++)
+                {
+                    if (gate.LabelOutlines[i] != null)
+                    {
+                        gate.LabelOutlines[i].transform.localScale = gate.Label.transform.localScale;
+                    }
+                }
+            }
             if (pop)
             {
                 SpawnText(gate.Transform.position + Vector3.up * 0.7f, gate.Amount >= 0 ? "+1" : "减弱", gate.Amount >= 0 ? new Color(0.2f, 0.85f, 0.35f) : new Color(1f, 0.28f, 0.18f), 0.24f);
@@ -2283,8 +2346,7 @@ namespace Tuyoo.Game.Demo
         private void UpdateElementGateVisual(Entity gate)
         {
             gate.Body.color = Color.Lerp(Color.white, GetElementColor(gate.Element), 0.25f);
-            gate.Label.text = ElementName(gate.Element);
-            gate.Label.color = GetElementColor(gate.Element);
+            SetWorldLabelText(gate, "");
             SpawnText(gate.Transform.position, "锁碎", GetElementColor(gate.Element), 0.42f);
         }
 
@@ -2689,6 +2751,61 @@ namespace Tuyoo.Game.Demo
             mesh.color = color;
             go.GetComponent<MeshRenderer>().sortingOrder = 90;
             return mesh;
+        }
+
+        private TextMesh CreateOutlinedWorldLabel(Transform parent, string text, Vector3 localPosition, float size, Color fillColor, Color outlineColor, out TextMesh[] outlines)
+        {
+            GameObject root = new GameObject("OutlinedLabel");
+            root.transform.SetParent(parent, false);
+            root.transform.localPosition = localPosition;
+
+            Vector3[] offsets =
+            {
+                new Vector3(-0.012f, 0f, 0f),
+                new Vector3(0.012f, 0f, 0f),
+                new Vector3(0f, -0.012f, 0f),
+                new Vector3(0f, 0.012f, 0f),
+                new Vector3(-0.009f, -0.009f, 0f),
+                new Vector3(-0.009f, 0.009f, 0f),
+                new Vector3(0.009f, -0.009f, 0f),
+                new Vector3(0.009f, 0.009f, 0f),
+            };
+
+            outlines = new TextMesh[offsets.Length];
+            for (int i = 0; i < offsets.Length; i++)
+            {
+                outlines[i] = CreateWorldLabel(root.transform, text, offsets[i], size, outlineColor);
+                outlines[i].name = "LabelOutline";
+                outlines[i].GetComponent<MeshRenderer>().sortingOrder = 90;
+            }
+
+            TextMesh front = CreateWorldLabel(root.transform, text, Vector3.zero, size, fillColor);
+            front.name = "LabelFill";
+            front.GetComponent<MeshRenderer>().sortingOrder = 91;
+            return front;
+        }
+
+        private void SetWorldLabelText(Entity entity, string text)
+        {
+            if (entity == null)
+            {
+                return;
+            }
+            if (entity.Label != null)
+            {
+                entity.Label.text = text;
+            }
+            if (entity.LabelOutlines == null)
+            {
+                return;
+            }
+            for (int i = 0; i < entity.LabelOutlines.Length; i++)
+            {
+                if (entity.LabelOutlines[i] != null)
+                {
+                    entity.LabelOutlines[i].text = text;
+                }
+            }
         }
 
         private float GetWeaponCooldown()
