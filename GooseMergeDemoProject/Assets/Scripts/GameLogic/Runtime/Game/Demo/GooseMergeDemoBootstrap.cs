@@ -219,7 +219,7 @@ namespace Tuyoo.Game.Demo
         private const float PlayerMoveSpeed = 8.2f;
         private const float PointerDragSensitivity = 1f;
         private const float GooseMuzzleForwardRatio = 0.34f;
-        private const float GooseAttackVideoScale = 1.05f;
+        private const float GooseAttackVideoScale = 1.02f;
         private const float GooseAttackFireRatio = 0.46f;
         private const float GooseScale = 0.42f;
         private const float GooseStackLift = 0.13f;
@@ -1240,8 +1240,10 @@ namespace Tuyoo.Game.Demo
             Bounds bounds = view.Renderer.sprite.bounds;
             Vector3 scale = view.Root.transform.lossyScale;
             float height = Mathf.Max(0.05f, bounds.size.y * Mathf.Abs(scale.y) * GooseAttackVideoScale);
-            float aspect = 480f / 854f;
-            return new Vector3(height * aspect, height, 1f);
+            // Match the attack video width to the current front-facing goose sprite.
+            // The source videos are 480x854, while the game's goose sprite frame is wider.
+            float spriteAspect = bounds.size.x / Mathf.Max(0.001f, bounds.size.y);
+            return new Vector3(height * spriteAspect, height, 1f);
         }
 
         private void FireBullet(Vector3 origin)
